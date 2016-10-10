@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tumbler.Addin.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Addin.cs" />
+    <Compile Include="AddinState.cs" />
     <Compile Include="IAddin.cs" />
     <Compile Include="IAddinTree.cs" />
     <Compile Include="ICodon.cs" />
@@ -47,9 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AddinTemplate.addin" />
-    <Content Include="TumblerAddinCore.addin">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="HierarchicalAddin.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

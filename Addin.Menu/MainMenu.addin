@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Addin Name="" Id="MainMenu" Author="" Copyright="" Version="" Url="" Description="" Path="">
+
+  <!--引用的程序集-->
+  <Assemblies>
+    <Reference Include="./Addins/Addin.Menu.dll"/>
+  </Assemblies>
+
+  <!--依赖的其它插件-->
+  <Dependencies>
+  </Dependencies>
+
+  <!--运行时信息-->
+  <Runtimes>
+    <!--Codon 插件的具体实现-->
+    <XX Class="Addin.Menu.MainMenu" Order=""/>
+  </Runtimes>
+
+</Addin>
