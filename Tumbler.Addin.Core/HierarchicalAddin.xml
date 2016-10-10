@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--根据插件的Path属性生成的树-->
+<Worksapce>
+  <Addins>
+    <Addin ref="">
+      <Addin ref=""/>
+    </Addin>
+  </Addins>
+  <Services>
+    <Addin ref="">
+      <Addin ref=""/>
+    </Addin>
+  </Services>
+</Worksapce>

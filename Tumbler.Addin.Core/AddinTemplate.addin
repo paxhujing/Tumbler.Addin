@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Addin Name="" Author="" Copyright="" Version="" Url="" Description="" Path="">
+
+  <!--引用的程序集-->
+  <Assemblies>
+    <Reference Include=""/>
+    <Reference Include=""/>
+  </Assemblies>
+
+  <!--依赖的其它插件-->
+  <Dependencies>
+    <Dependecy Path=""/>
+    <Dependecy Path=""/>
+  </Dependencies>
+
+  <!--运行时信息-->
+  <Runtime>
+    <!--Codon 插件的具体实现-->
+    <XX Id="" Class="" Order=""/>
+  </Runtime>
+
+</Addin>

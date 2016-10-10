@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tumbler.Addin.Core
 {
-    public interface ICodon
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class CodonAttribute : Attribute
     {
-        IAddin Addin { get; }
-
-        String Class { get; }
-
-        String Id { get; }
     }
 }
