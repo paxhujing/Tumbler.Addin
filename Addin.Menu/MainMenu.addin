@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Addin Name="" Id="MainMenu" Author="" Copyright="" Version="" Url="" Description="" Path="">
+<AddinDescriptor Name="" Author="" Copyright="" Version="" Url="" Description="">
 
   <!--引用的程序集-->
   <Assemblies>
@@ -9,11 +9,15 @@
   <!--依赖的其它插件-->
   <Dependencies>
   </Dependencies>
-
+  
   <!--运行时信息-->
   <Runtimes>
-    <!--Codon 插件的具体实现-->
-    <XX Class="Addin.Menu.MainMenu" Order=""/>
+    <!--Path 表示插件的挂载路径-->
+    <Path name="">
+      <!--Addin 表示插件-->
+      <!--对应一个实现了IAddin接口的类型-->
+      <XXAddin Id="MainMenu" title="" Type="Addin.Menu.MainMenu,Addin.Menu" />
+    </Path>
   </Runtimes>
 
-</Addin>
+</AddinDescriptor>

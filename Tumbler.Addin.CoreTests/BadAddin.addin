@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Addin Path="/Addins/Menu" Id="OpenFile">
+<Addin Path="" Id="OpenFile">
 
   <!--插件基本信息-->
   <Info Name="" Author="" Copyright="" Version="" Url="" Description=""/>

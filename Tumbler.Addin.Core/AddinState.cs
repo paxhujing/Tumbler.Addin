@@ -16,13 +16,25 @@ namespace Tumbler.Addin.Core
         /// </summary>
         Uninstall,
         /// <summary>
-        /// 依赖错误。
+        /// 无效的挂载点。
         /// </summary>
-        DependencyError,
+        InvalidMountPoint,
+        /// <summary>
+        /// 加载程序集失败。
+        /// </summary>
+        LoadAssemblyFail,
+        /// <summary>
+        /// 加载类型失败。
+        /// </summary>
+        LoadTypeFail,
         /// <summary>
         /// 安装。
         /// </summary>
         Install,
+        /// <summary>
+        /// 依赖解析失败。
+        /// </summary>
+        DependencyFail,
         /// <summary>
         /// 启用。
         /// </summary>
