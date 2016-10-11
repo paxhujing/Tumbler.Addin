@@ -10,14 +10,14 @@ namespace Tumbler.Addin.Core
     /// <summary>
     /// 插件树节点。
     /// </summary>
-    internal class AddinTreeNode
+    public class AddinTreeNode
     {
         #region Fields
 
         /// <summary>
         /// 工作空间的路径。
         /// </summary>
-        public const String WorkspaceNodeId = ".";
+        public const String WorkspaceId = ".";
 
         #endregion
 
@@ -31,18 +31,8 @@ namespace Tumbler.Addin.Core
         /// <param name="configFile">插件配置文件。</param>
         public AddinTreeNode(String path, String id, String configFile)
         {
-            if (!path.StartsWith("./"))
-            {
-                if (path.StartsWith("/"))
-                {
-                    path = WorkspaceNodeId + path;
-                }
-                else
-                {
-                    path = $"{WorkspaceNodeId}/{path}";
-                }
-            }
-            if(path.EndsWith("/"))
+            path = CompletePath(path);
+            if (path.EndsWith("/"))
             {
                 FullPath = path + id;
             }
@@ -95,7 +85,36 @@ namespace Tumbler.Addin.Core
         /// 子节点。
         /// </summary>
         public Collection<AddinTreeNode> Children { get; } = new Collection<AddinTreeNode>();
-       
+
+        #endregion
+
+        #region Methods
+
+        #region Internal
+
+        /// <summary>
+        /// 补全路径。
+        /// </summary>
+        /// <param name="path">路径。</param>
+        /// <returns>包含工作空间的完成路径。</returns>
+        internal static String CompletePath(String path)
+        {
+            if (!path.StartsWith("./"))
+            {
+                if (path.StartsWith("/"))
+                {
+                    path = WorkspaceId + path;
+                }
+                else
+                {
+                    path = $"{WorkspaceId}/{path}";
+                }
+            }
+            return path;
+        }
+
+        #endregion
+
         #endregion
     }
 }

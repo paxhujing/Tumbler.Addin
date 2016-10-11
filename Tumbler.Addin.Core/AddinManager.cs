@@ -40,9 +40,14 @@ namespace Tumbler.Addin.Core
         #region Properties
 
         /// <summary>
-        /// 服务配置文件。
+        /// 获取服务配置文件。
         /// </summary>
         public String ConfigFile { get; }
+
+        /// <summary>
+        /// 获取插件数量。
+        /// </summary>
+        public Int32 Count { get; private set; }
 
         #endregion
 
@@ -59,6 +64,22 @@ namespace Tumbler.Addin.Core
             if (!File.Exists(ConfigFile)) throw new FileNotFoundException(ConfigFile);
             CreateAddinTreeNodes();
             GenerateAddinTree();
+        }
+
+        /// <summary>
+        /// 获取指定路径的插件树节点。
+        /// </summary>
+        /// <param name="fullPath">路径。</param>
+        /// <returns>插件树节点。</returns>
+        public AddinTreeNode GetNode(String fullPath)
+        {
+            if (String.IsNullOrWhiteSpace(fullPath)) return null;
+            fullPath = AddinTreeNode.CompletePath(fullPath);
+            if (_nodes.ContainsKey(fullPath))
+            {
+                return _nodes[fullPath];
+            }
+            return null;
         }
 
         #endregion
@@ -108,7 +129,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void GenerateAddinTree()
         {
-            foreach(AddinTreeNode node in _nodes.Values.Skip(2).ToArray())
+            foreach (AddinTreeNode node in _nodes.Values.Skip(2).ToArray())
             {
                 if(_nodes.ContainsKey(node.Path))
                 {
@@ -119,6 +140,7 @@ namespace Tumbler.Addin.Core
                     _nodes.Remove(node.FullPath);
                 }
             }
+            Count = _nodes.Count - 2;
         }
 
         #endregion

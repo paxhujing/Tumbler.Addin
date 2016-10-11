@@ -17,10 +17,10 @@ namespace Tumbler.Addin.Core
         /// 初始化类型 Tumbler.Addin.Core.RootAddinTreeNode 实例。
         /// </summary>
         public RootAddinTreeNode()
-            : base(null, WorkspaceNodeId)
+            : base(null, WorkspaceId)
         {
-            Children.Add(new AddinTreeNode(WorkspaceNodeId, "Addins"));
-            Children.Add(new AddinTreeNode(WorkspaceNodeId, "Services"));
+            Children.Add(new AddinTreeNode(WorkspaceId, "Addins"));
+            Children.Add(new AddinTreeNode(WorkspaceId, "Services"));
         }
 
         #endregion
