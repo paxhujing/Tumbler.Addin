@@ -16,7 +16,7 @@ namespace Tumbler.Addin.Core
     {
         #region Fields
 
-        private readonly AddinTreeNode _root = new RootAddinTreeNode();
+        private readonly AddinTreeNode _root = new RootNode();
 
         private readonly Dictionary<String, AddinTreeNode> _nodes = new Dictionary<string, AddinTreeNode>();
 
@@ -31,8 +31,9 @@ namespace Tumbler.Addin.Core
         public AddinManager(String configFile)
         {
             ConfigFile = configFile;
-            _nodes.Add(_root.Children[0].FullPath, _root.Children[0]);
-            _nodes.Add(_root.Children[1].FullPath, _root.Children[1]);
+            _nodes.Add(_root.FullPath, _root);
+            _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
+            _nodes.Add(_root.InnerChildren[1].FullPath, _root.InnerChildren[1]);
         }
 
         #endregion
@@ -121,7 +122,7 @@ namespace Tumbler.Addin.Core
             if(pathAttr == null) throw new FileLoadException("Invalid addin config file.[Path]");
             XAttribute idAttr = xml.Attribute("Id");
             if (idAttr == null) throw new FileLoadException("Invalid addin config file.[Id]");
-            return new AddinTreeNode(pathAttr.Value, idAttr.Value, file);
+            return new AddinNode(pathAttr.Value, idAttr.Value, file);
         }
 
         /// <summary>
@@ -129,11 +130,11 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void GenerateAddinTree()
         {
-            foreach (AddinTreeNode node in _nodes.Values.Skip(2).ToArray())
+            foreach (AddinTreeNode node in _nodes.Values.Skip(3).ToArray())
             {
                 if(_nodes.ContainsKey(node.Path))
                 {
-                    _nodes[node.Path].Children.Add(node);
+                    _nodes[node.Path].InnerChildren.Add(node);
                 }
                 else
                 {

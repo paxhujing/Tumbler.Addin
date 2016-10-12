@@ -17,7 +17,7 @@ namespace Tumbler.Addin.Core.Tests
         public void InitializeTest()
         {
             _manager.Initialize();
-            Assert.AreEqual<Int32>(5, _manager.Count);
+            Assert.AreEqual<Int32>(6, _manager.Count);
         }
 
         [TestMethod()]
@@ -25,10 +25,10 @@ namespace Tumbler.Addin.Core.Tests
         {
             _manager.Initialize();
             AddinTreeNode badAddin = _manager.GetNode("OpenFile");
-            Assert.IsNull(badAddin, badAddin.FullPath);
+            Assert.IsNull(badAddin, "Should be null");
 
             AddinTreeNode goodAddin = _manager.GetNode("Addins/Menu/File/OpenFile");
-            Assert.IsNotNull(goodAddin, goodAddin.FullPath);
+            Assert.IsNotNull(goodAddin, "Should be not null");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Tumbler.Addin.Core
     /// <summary>
     /// 插件树节点。
     /// </summary>
-    public class AddinTreeNode
+    public abstract class AddinTreeNode
     {
         #region Fields
 
@@ -18,6 +18,8 @@ namespace Tumbler.Addin.Core
         /// 工作空间的路径。
         /// </summary>
         public const String WorkspaceId = ".";
+
+        private readonly Int32 _hash;
 
         #endregion
 
@@ -28,33 +30,29 @@ namespace Tumbler.Addin.Core
         /// </summary>
         /// <param name="path">挂载点。</param>
         /// <param name="id">插件Id。</param>
-        /// <param name="configFile">插件配置文件。</param>
-        public AddinTreeNode(String path, String id, String configFile)
+        protected AddinTreeNode(String path, String id)
         {
-            path = CompletePath(path);
-            if (path.EndsWith("/"))
+            if (path == null)
             {
-                FullPath = path + id;
+                throw new ArgumentNullException("path");
             }
-            else
+            if (String.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+            path = CompletePath(path);
+            if(!String.IsNullOrWhiteSpace(path))
             {
                 FullPath = $"{path}/{id}";
             }
+            else
+            {
+                FullPath = id;
+            }
+            _hash = FullPath.GetHashCode();
             Path = path;
             Id = id;
-            ConfigFile = configFile;
-        }
-
-        /// <summary>
-        /// 初始化类型 Tumbler.Addin.Core.AddinTreeNode 实例。
-        /// </summary>
-        /// <param name="path">挂载点。</param>
-        /// <param name="id">插件Id。</param>
-        internal AddinTreeNode(String path, String id)
-        {
-            Path = path;
-            Id = id;
-            FullPath = String.IsNullOrWhiteSpace(path) ? id : $"{path}/{id}";
+            Children = new ReadOnlyCollection<AddinTreeNode>(InnerChildren);
         }
 
         #endregion
@@ -62,55 +60,83 @@ namespace Tumbler.Addin.Core
         #region Properties
 
         /// <summary>
-        /// 挂载点。
+        /// 获取一个标识，表明该节点是否是一个虚拟节点而不是实际的插件节点。
+        /// </summary>
+        public abstract Boolean IsVirtual { get; }
+
+        /// <summary>
+        /// 获取节点的上级路径。
         /// </summary>
         public String Path { get; }
         
         /// <summary>
-        /// 插件Id。
+        /// 获取插件Id。
         /// </summary>
-        public String Id { get; set; }
+        public String Id { get; }
 
         /// <summary>
-        /// 完整路径。
+        /// 获取完整路径。
         /// </summary>
         public String FullPath { get; }
 
         /// <summary>
-        /// 插件配置文件。
+        /// 获取当前节点的子节点。
         /// </summary>
-        public String ConfigFile { get; set; }
+        public ReadOnlyCollection<AddinTreeNode> Children { get; }
 
         /// <summary>
-        /// 子节点。
+        /// 内部获取当前节点的子节点。
         /// </summary>
-        public Collection<AddinTreeNode> Children { get; } = new Collection<AddinTreeNode>();
+        internal Collection<AddinTreeNode> InnerChildren { get; } = new Collection<AddinTreeNode>();
 
         #endregion
 
         #region Methods
 
-        #region Internal
+        #region Public
 
         /// <summary>
         /// 补全路径。
         /// </summary>
         /// <param name="path">路径。</param>
         /// <returns>包含工作空间的完成路径。</returns>
-        internal static String CompletePath(String path)
+        public static String CompletePath(String path)
         {
-            if (!path.StartsWith("./"))
+            if (String.IsNullOrWhiteSpace(path))
             {
-                if (path.StartsWith("/"))
+                return String.Empty;
+            }
+            else if (path == AddinTreeNode.WorkspaceId)
+            {
+                return AddinTreeNode.WorkspaceId;
+            }
+            else
+            {
+                if (path.StartsWith("./"))
                 {
-                    path = WorkspaceId + path;
+                    return path;
                 }
                 else
                 {
-                    path = $"{WorkspaceId}/{path}";
+                    if (path.StartsWith("/"))
+                    {
+                        return AddinTreeNode.WorkspaceId + path;
+                    }
+                    else
+                    {
+                        return $"{AddinTreeNode.WorkspaceId}/{path}";
+                    }
                 }
             }
-            return path;
+        }
+
+        /// <summary>
+        /// 获取对象的Hash值。
+        /// </summary>
+        /// <returns>对象的Hash值。</returns>
+        public override Int32 GetHashCode()
+        {
+            return _hash;
         }
 
         #endregion
