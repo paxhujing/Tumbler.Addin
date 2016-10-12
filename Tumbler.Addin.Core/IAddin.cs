@@ -11,10 +11,15 @@ namespace Tumbler.Addin.Core
     /// </summary>
     public interface IAddin
     {
-        String Id { get; }
+        /// <summary>
+        /// 初始化插件。
+        /// </summary>
+        /// <param name="label">插件标签。</param>
+        void Initialize(String label);
 
-        Type Type { get; }
-
-        Object Build();
+        /// <summary>
+        /// 执行插件提供的功能。
+        /// </summary>
+        void Execute();
     }
 }

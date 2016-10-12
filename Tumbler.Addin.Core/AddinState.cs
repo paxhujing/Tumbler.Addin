@@ -12,29 +12,13 @@ namespace Tumbler.Addin.Core
     public enum AddinState
     {
         /// <summary>
-        /// 卸载。
+        /// 未加载。
         /// </summary>
-        Uninstall,
+        Unload,
         /// <summary>
-        /// 无效的挂载点。
+        /// 已加载。
         /// </summary>
-        InvalidMountPoint,
-        /// <summary>
-        /// 加载程序集失败。
-        /// </summary>
-        LoadAssemblyFail,
-        /// <summary>
-        /// 加载类型失败。
-        /// </summary>
-        LoadTypeFail,
-        /// <summary>
-        /// 安装。
-        /// </summary>
-        Install,
-        /// <summary>
-        /// 依赖解析失败。
-        /// </summary>
-        DependencyFail,
+        Loaded,
         /// <summary>
         /// 启用。
         /// </summary>

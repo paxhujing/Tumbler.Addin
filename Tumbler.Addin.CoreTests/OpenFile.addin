@@ -6,8 +6,8 @@
       
   <!--引用的程序集-->
   <Assemblies>
-    <Reference Include="Addin.Menu" Path="./Addins/Addin.Menu.dll"/>
-    <Reference Include="Addin.Tool" Path="./Addins/Addin.Tool.dll"/>
+    <Reference Path=".\Addins\Addin.Menu.dll"/>
+    <Reference Path=".\Addins\Addin.Tool.dll"/>
   </Assemblies>
   
   <!--依赖的其它插件-->
@@ -17,5 +17,5 @@
 
   <!--Codon 表示插件-->
   <!--对应一个实现了IAddin接口的类型-->
-  <Codon Title="打开" Type="Addin.Menu.OpenFile,Addin.Menu" />
+  <Codon Label="打开" Type="Addin.Menu.OpenFile,Addin.Menu" />
 </Addin>

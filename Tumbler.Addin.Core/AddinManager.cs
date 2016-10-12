@@ -16,7 +16,7 @@ namespace Tumbler.Addin.Core
     {
         #region Fields
 
-        private readonly AddinTreeNode _root = new RootNode();
+        private readonly AddinTreeNode _root;
 
         private readonly Dictionary<String, AddinTreeNode> _nodes = new Dictionary<string, AddinTreeNode>();
 
@@ -30,6 +30,7 @@ namespace Tumbler.Addin.Core
         /// <param name="configFile">服务配置文件。</param>
         public AddinManager(String configFile)
         {
+            _root = new RootNode(this);
             ConfigFile = configFile;
             _nodes.Add(_root.FullPath, _root);
             _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
@@ -65,6 +66,27 @@ namespace Tumbler.Addin.Core
             if (!File.Exists(ConfigFile)) throw new FileNotFoundException(ConfigFile);
             CreateAddinTreeNodes();
             GenerateAddinTree();
+        }
+
+        /// <summary>
+        /// 构建第一级的所有插件。
+        /// </summary>
+        /// <returns>第一级的所有插件列表。</returns>
+        public IAddin[] BuildFirstLevelAddins()
+        {
+            return BuildlAddins(_root.Children[0].Children);
+        }
+
+        /// <summary>
+        /// 构建指定插件的下一级插件列表。
+        /// </summary>
+        /// <param name="addin">下一级插件的父级插件。</param>
+        /// <returns>下一级插件列表。</returns>
+        public IAddin[] BuildChildAddins(IAddin addin)
+        {
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new ArgumentNullException("descriptor");
+            return BuildlAddins(descriptor.Owner.Children);
         }
 
         /// <summary>
@@ -117,12 +139,8 @@ namespace Tumbler.Addin.Core
             String file = attribute.Value;
             if (String.IsNullOrWhiteSpace(file) || !File.Exists(file)) return null;
             XElement xml = XElement.Load(file);
-            if (xml == null) throw new FileLoadException("Invalid addin config file");
-            XAttribute pathAttr = xml.Attribute("Path");
-            if(pathAttr == null) throw new FileLoadException("Invalid addin config file.[Path]");
-            XAttribute idAttr = xml.Attribute("Id");
-            if (idAttr == null) throw new FileLoadException("Invalid addin config file.[Id]");
-            return new AddinNode(pathAttr.Value, idAttr.Value, file);
+            if (xml == null) throw new FileLoadException("Invalid addin installation file");
+            return new AddinNode(xml.Attribute("Path")?.Value, xml.Attribute("Id").Value, this, file);
         }
 
         /// <summary>
@@ -142,6 +160,25 @@ namespace Tumbler.Addin.Core
                 }
             }
             Count = _nodes.Count - 2;
+        }
+
+        /// <summary>
+        /// 构建插件列表。
+        /// </summary>
+        /// <returns>插件列表。</returns>
+        private IAddin[] BuildlAddins(ReadOnlyCollection<AddinTreeNode> nodes)
+        {
+            AddinNode addinNode = null;
+            Collection<IAddin> addins = new Collection<IAddin>();
+            foreach (AddinTreeNode node in nodes)
+            {
+                addinNode = node as AddinNode;
+                if (addinNode != null)
+                {
+                    addins.Add(addinNode.Buid());
+                }
+            }
+            return addins.ToArray();
         }
 
         #endregion

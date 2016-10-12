@@ -16,11 +16,12 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化类型 Tumbler.Addin.Core.RootAddinTreeNode 实例。
         /// </summary>
-        public RootNode()
-            : base(String.Empty, WorkspaceId)
+        /// <param name="owner">拥有此插件树节点的管理器。</param>
+        public RootNode(AddinManager owner)
+            : base(String.Empty, WorkspaceId, owner)
         {
-            InnerChildren.Add(new VirtualNode(WorkspaceId, "Addins"));
-            InnerChildren.Add(new VirtualNode(WorkspaceId, "Services"));
+            InnerChildren.Add(new VirtualNode(WorkspaceId, "Addins", owner));
+            InnerChildren.Add(new VirtualNode(WorkspaceId, "Services", owner));
         }
 
         #endregion

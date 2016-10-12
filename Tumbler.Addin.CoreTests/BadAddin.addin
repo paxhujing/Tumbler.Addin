@@ -6,16 +6,15 @@
       
   <!--引用的程序集-->
   <Assemblies>
-    <Reference Include="Addin.Menu" Path="./Addins/Addin.Menu.dll"/>
-    <Reference Include="Addin.Tool" Path="./Addins/Addin.Tool.dll"/>
-  </Assemblies>
-  
-  <!--依赖的其它插件-->
+    <Reference Path=".\Addins\Addin.Menu.dll"/>
+    <Reference Path=".\Addins\Addin.Tool.dll"/>
+
+    <!--依赖的其它插件-->
   <Dependencies>
     <Dependecy Path="/Addin/Editor/TextEditor"/>
   </Dependencies>
 
   <!--Codon 表示插件-->
   <!--对应一个实现了IAddin接口的类型-->
-  <Codon Title="Open" Type="Addin.Menu.OpenFile,Addin.Menu" />
+  <Codon Label="Open" Type="Addin.Menu.OpenFile,Addin.Menu" />
 </Addin>

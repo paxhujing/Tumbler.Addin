@@ -30,5 +30,13 @@ namespace Tumbler.Addin.Core.Tests
             AddinTreeNode goodAddin = _manager.GetNode("Addins/Menu/File/OpenFile");
             Assert.IsNotNull(goodAddin, "Should be not null");
         }
+
+        [TestMethod()]
+        public void BuildTest()
+        {
+            _manager.Initialize();
+            IAddin[] addins = _manager.BuildFirstLevelAddins();
+            Assert.Fail();
+        }
     }
 }
