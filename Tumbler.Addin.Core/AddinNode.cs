@@ -48,7 +48,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取插件的描述。
         /// </summary>
-        public Lazy<AddinDescriptor> Descriptor { get;}
+        internal Lazy<AddinDescriptor> Descriptor { get;}
 
         #endregion
 

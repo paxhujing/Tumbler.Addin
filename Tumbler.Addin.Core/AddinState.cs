@@ -12,13 +12,13 @@ namespace Tumbler.Addin.Core
     public enum AddinState
     {
         /// <summary>
-        /// 未加载。
+        /// 未构建插件的实例。
         /// </summary>
-        Unload,
+        None,
         /// <summary>
-        /// 已加载。
+        /// 已构建插件的实例。
         /// </summary>
-        Loaded,
+        Build,
         /// <summary>
         /// 启用。
         /// </summary>

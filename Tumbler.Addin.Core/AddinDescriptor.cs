@@ -135,13 +135,13 @@ namespace Tumbler.Addin.Core
         /// <returns>代表了插件的对象，例如一个UI元素。</returns>
         public IAddin Build()
         {
-            if (Addin == null)
+            if (State == AddinState.None)
             {
                 IAddin addin = LoadAddin();
                 addin.Initialize(Label);
                 AddinsDescriptor.Add(addin, this);
                 Addin = addin;
-                State = AddinState.Loaded;
+                State = AddinState.Build;
             }
             return Addin;
         }
