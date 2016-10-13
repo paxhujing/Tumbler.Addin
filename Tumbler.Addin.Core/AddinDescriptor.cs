@@ -162,7 +162,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public void Destroy()
         {
-            if (BuildState != AddinBuildState.None)
+            if (BuildState == AddinBuildState.Build)
             {
                 RemoveDependencies();
                 AddinsDescriptor.Remove(Addin);
