@@ -105,6 +105,29 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 安装插件。
+        /// </summary>
+        /// <param name="addinConfigFile">插件配置文件。</param>
+        public void Install(String addinConfigFile)
+        {
+            if(String.IsNullOrWhiteSpace(addinConfigFile))
+            {
+                throw new ArgumentNullException("addinConfigFile");
+            }
+            if(!addinConfigFile.EndsWith(".addin"))
+            {
+                throw new FileLoadException("Invalid addin config file");
+            }
+
+            XElement xml = XElement.Load(ConfigFile);
+            XElement exsited = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == addinConfigFile);
+            if (exsited != null) return;
+            XElement newElement = XElement.Parse($"<Addin ref='{addinConfigFile}'/>");
+            xml.Add(newElement);
+            xml.Save(ConfigFile);
+        }
+
+        /// <summary>
         /// 销毁插件。
         /// </summary>
         /// <param name="addinNode">插件树节点。</param>

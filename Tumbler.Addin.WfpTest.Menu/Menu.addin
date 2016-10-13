@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Addin>
+
+  <Info Name="Menu" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="这是一个菜单栏"/>
+  
+  <Runtimes Path="./Addins" Id="Menu" Type="Tumbler.Addin.WfpTest.Menu.MenuAddin,Tumbler.Addin.WfpTest.Menu">
+    
+    <!--引用的程序集-->
+    <Assemblies>
+      <Reference Path="E:/Tumbler.Addin/Tumbler.Addin.WfpTest.Menu/bin/Debug/Tumbler.Addin.WfpTest.Menu.dll"/>
+    </Assemblies>
+
+    <!--依赖的其它插件-->
+    <Dependencies>
+    </Dependencies>
+
+  </Runtimes>
+</Addin>

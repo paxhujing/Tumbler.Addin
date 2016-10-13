@@ -112,5 +112,12 @@ namespace Tumbler.Addin.Core.Tests
             _manager.SendMessage("./Addins/Toolbar", new System.Collections.Hashtable());
             Assert.Fail();
         }
+
+        [TestMethod()]
+        public void InstallTest()
+        {
+            _manager.Install(@"E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Menu.addin");
+            Assert.Fail();
+        }
     }
 }

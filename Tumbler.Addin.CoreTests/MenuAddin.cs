@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tumber.Addin.Common;
 using Tumbler.Addin.Core;
 using static System.Diagnostics.Debug;
 
@@ -20,7 +21,7 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("Execute MenuAddin");
         }
 
-        public void Initialize(AddinManager manager)
+        public void Initialize()
         {
             WriteLine("Initialize MenuAddin");
         }
