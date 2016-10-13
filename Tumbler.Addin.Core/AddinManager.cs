@@ -105,12 +105,10 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 销毁插件。
         /// </summary>
-        /// <param name="addin">插件。</param>
-        public void Uninstall(IAddin addin)
+        /// <param name="addinNode">插件树节点。</param>
+        public void Uninstall(AddinNode addinNode)
         {
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
-            String configFile = ((AddinNode)descriptor.Owner).ConfigFile;
+            String configFile = addinNode.ConfigFile;
             XElement xml = XElement.Load(ConfigFile);
             XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == configFile);
             if(removeItem != null)
