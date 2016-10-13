@@ -103,5 +103,13 @@ namespace Tumbler.Addin.Core.Tests
             }
             Assert.Fail();
         }
+
+        [TestMethod()]
+        public void SendMessageTest()
+        {
+            //IAddin[] addins = _manager.BuildFirstLevelAddins();
+            _manager.SendMessage("./Addins/Toolbar", new System.Collections.Hashtable());
+            Assert.Fail();
+        }
     }
 }

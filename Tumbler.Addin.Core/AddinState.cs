@@ -19,5 +19,13 @@ namespace Tumbler.Addin.Core
         /// 禁用
         /// </summary>
         Disable,
+        /// <summary>
+        /// 不可见或不可执行。
+        /// </summary>
+        Exclude,
+        /// <summary>
+        /// 可见或可执行。
+        /// </summary>
+        Include,
     }
 }

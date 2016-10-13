@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -159,6 +160,22 @@ namespace Tumbler.Addin.Core
             if (descriptor == null) return false;
             descriptor.AddinState = state;
             return true;
+        }
+
+        /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="fullPath">目标插件的完整路径。</param>
+        /// <param name="message">消息。</param>
+        public void SendMessage(String fullPath, Hashtable message)
+        {
+            AddinNode node = GetNode(fullPath) as AddinNode;
+            if (node == null) return;
+            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build && descriptor.CanRecieveMessage)
+            {
+                ((IHandler)descriptor.Addin).Handle(message);
+            }
         }
 
         /// <summary>

@@ -50,6 +50,7 @@
     <Compile Include="AddinState.cs" />
     <Compile Include="AddinTreeNode.cs" />
     <Compile Include="IAddin.cs" />
+    <Compile Include="IHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootNode.cs" />
     <Compile Include="VirtualNode.cs" />

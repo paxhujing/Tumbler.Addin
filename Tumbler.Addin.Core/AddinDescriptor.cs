@@ -76,6 +76,11 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public AddinBuildState BuildState { get; private set; }
 
+        /// <summary>
+        /// 表示插件是否可以接收来自其它插件的消息。
+        /// </summary>
+        public Boolean CanRecieveMessage { get; private set; }
+
         #region AddinState
 
         private AddinState _addinState;
@@ -248,6 +253,10 @@ namespace Tumbler.Addin.Core
             if (type.GetInterface(typeof(IAddin).FullName) == null)
             {
                 throw new TypeLoadException($"{type.FullName} must implement IAddin interface");
+            }
+            if (type.GetInterface(typeof(IHandler).FullName) != null)
+            {
+                CanRecieveMessage = true;
             }
         }
 
