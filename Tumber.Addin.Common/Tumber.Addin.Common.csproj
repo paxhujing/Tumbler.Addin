@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddinBaseInfo.cs" />
     <Compile Include="AddinState.cs" />
     <Compile Include="IAddin.cs" />
     <Compile Include="IHandler.cs" />

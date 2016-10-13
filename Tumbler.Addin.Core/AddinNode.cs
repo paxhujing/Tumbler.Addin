@@ -29,7 +29,11 @@ namespace Tumbler.Addin.Core
                 throw new ArgumentNullException("configFile");
             }
             ConfigFile = configFile;
-            Descriptor = new Lazy<AddinDescriptor>(() => AddinDescriptor.Parse(configFile, this));
+            Descriptor = new Lazy<AddinDescriptor>(() => AddinDescriptor.Parse(ConfigFile, this));
+            Info = new Lazy<AddinBaseInfo>(()=>
+            {
+                return AddinManager.GetAddinBaseInfo(ConfigFile);
+            });
         }
 
         #endregion
@@ -45,6 +49,11 @@ namespace Tumbler.Addin.Core
         /// 获取插件的描述。
         /// </summary>
         internal Lazy<AddinDescriptor> Descriptor { get;}
+
+        /// <summary>
+        /// 插件基本信息。
+        /// </summary>
+        public Lazy<AddinBaseInfo> Info { get; }
 
         #endregion
 

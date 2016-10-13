@@ -48,10 +48,24 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddinManagerMenuAddin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddinManagerWin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MenuAddin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AddinManagerMenuAddin.xaml.cs">
+      <DependentUpon>AddinManagerMenuAddin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddinManagerWin.xaml.cs">
+      <DependentUpon>AddinManagerWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MenuAddin.xaml.cs">
       <DependentUpon>MenuAddin.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -86,9 +100,19 @@
       <Project>{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}</Project>
       <Name>Tumber.Addin.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tumbler.Addin.Core\Tumbler.Addin.Core.csproj">
+      <Project>{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}</Project>
+      <Name>Tumbler.Addin.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Menu.addin">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AddinManagerMenu.addin">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

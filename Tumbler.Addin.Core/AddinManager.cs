@@ -18,9 +18,16 @@ namespace Tumbler.Addin.Core
     {
         #region Fields
 
-        private readonly AddinTreeNode _root;
+        /// <summary>
+        /// 插件服务的实例。
+        /// </summary>
+        public static readonly AddinManager Instance = new AddinManager();
+
+        private AddinTreeNode _root;
 
         private readonly Dictionary<String, AddinTreeNode> _nodes = new Dictionary<string, AddinTreeNode>();
+
+        private Boolean _isInit;
 
         #endregion
 
@@ -29,16 +36,8 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化类型 Tumbler.Addin.Core.AddinManager 实例。
         /// </summary>
-        /// <param name="configFile">服务配置文件。</param>
-        public AddinManager(String configFile)
+        private AddinManager()
         {
-            if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
-            if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
-            ConfigFile = configFile;
-            _root = new RootNode(this);
-            _nodes.Add(_root.FullPath, _root);
-            _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
-            _nodes.Add(_root.InnerChildren[1].FullPath, _root.InnerChildren[1]);
         }
 
         #endregion
@@ -48,7 +47,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取服务配置文件。
         /// </summary>
-        public String ConfigFile { get; }
+        public String ConfigFile { get; private set; }
 
         /// <summary>
         /// 获取插件数量。
@@ -62,14 +61,60 @@ namespace Tumbler.Addin.Core
         #region Public
 
         /// <summary>
+        /// 获取插件基本信息。
+        /// </summary>
+        /// <param name="addinConfigFile">插件配置文件。</param>
+        public static AddinBaseInfo GetAddinBaseInfo(String addinConfigFile)
+        {
+            if (String.IsNullOrWhiteSpace(addinConfigFile))
+            {
+                throw new ArgumentNullException("addinConfigFile");
+            }
+            if (!addinConfigFile.EndsWith(".addin"))
+            {
+                throw new FileLoadException("Invalid addin config file");
+            }
+            AddinBaseInfo info = new AddinBaseInfo();
+            XElement xml = XElement.Load(addinConfigFile);
+            XElement infoNode = xml.Element("Info");
+            if (infoNode != null)
+            {
+                info.Name = infoNode.Attribute("Name")?.Value;
+                info.Author = infoNode.Attribute("Author")?.Value;
+                info.Copyright = infoNode.Attribute("Copyright")?.Value;
+                info.Url = infoNode.Attribute("Url")?.Value;
+                info.Description = infoNode.Attribute("Description")?.Value;
+                info.Version = infoNode.Attribute("Version")?.Value;
+            }
+            return info;
+        }
+
+        /// <summary>
         /// 初始化插件管理器。
         /// </summary>
-        public void Initialize()
+        public void Initialize(String configFile)
         {
-            if (String.IsNullOrWhiteSpace(ConfigFile)) return;
-            if (!File.Exists(ConfigFile)) throw new FileNotFoundException(ConfigFile);
+            if (_isInit) return;
+            if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
+            if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
+            ConfigFile = configFile;
+            _root = new RootNode(this);
+            _nodes.Add(_root.FullPath, _root);
+            _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
+            _nodes.Add(_root.InnerChildren[1].FullPath, _root.InnerChildren[1]);
             CreateAddinTreeNodes();
             GenerateAddinTree();
+            _isInit = true;
+        }
+
+        /// <summary>
+        /// 获取已安装的插件信息。
+        /// </summary>
+        /// <returns>已安装插件的信息列表。</returns>
+        public IEnumerable<AddinTreeNode> GetInstallAddinInfos()
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            return _nodes.Values.Where(x => x is AddinNode);
         }
 
         /// <summary>
@@ -78,6 +123,7 @@ namespace Tumbler.Addin.Core
         /// <returns>第一级的所有插件列表。</returns>
         public IAddin[] BuildFirstLevelAddins()
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             return BuildlAddins(_root.Children[0].Children);
         }
 
@@ -88,6 +134,7 @@ namespace Tumbler.Addin.Core
         /// <returns>下一级插件列表。</returns>
         public IAddin[] BuildChildAddins(IAddin addin)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             return BuildlAddins(descriptor.Owner.Children);
@@ -99,6 +146,7 @@ namespace Tumbler.Addin.Core
         /// <param name="addin">插件。</param>
         public void Destroy(IAddin addin)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             descriptor.Destroy();
@@ -110,7 +158,8 @@ namespace Tumbler.Addin.Core
         /// <param name="addinConfigFile">插件配置文件。</param>
         public void Install(String addinConfigFile)
         {
-            if(String.IsNullOrWhiteSpace(addinConfigFile))
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (String.IsNullOrWhiteSpace(addinConfigFile))
             {
                 throw new ArgumentNullException("addinConfigFile");
             }
@@ -128,11 +177,12 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 销毁插件。
+        /// 卸载插件。
         /// </summary>
         /// <param name="addinNode">插件树节点。</param>
         public void Uninstall(AddinNode addinNode)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             String configFile = addinNode.ConfigFile;
             XElement xml = XElement.Load(ConfigFile);
             XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == configFile);
@@ -150,6 +200,7 @@ namespace Tumbler.Addin.Core
         /// <returns>插件状态。如果为null表示当前无法获取到插件的状态，可能是当前节点不是插件节点AddinNode，或者插件还未构建。</returns>
         public AddinState? GetAddinState(String fullPath)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinTreeNode node = GetNode(fullPath);
             if (node == null) throw new InvalidOperationException("Unknow path");
             AddinNode addinNode = node as AddinNode;
@@ -167,6 +218,7 @@ namespace Tumbler.Addin.Core
         /// <returns>插件状态。如果为null表示插件管理器无法跟踪该插件。</returns>
         public AddinState? GetAddinState(IAddin addin)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return null;
             return descriptor.AddinState;
@@ -180,6 +232,7 @@ namespace Tumbler.Addin.Core
         /// <returns>设置成功返回true；否则返回false。</returns>
         public Boolean SetAddinState(IAddin addin, AddinState state)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return false;
             descriptor.AddinState = state;
@@ -193,6 +246,7 @@ namespace Tumbler.Addin.Core
         /// <param name="message">消息。</param>
         public void SendMessage(String fullPath, Hashtable message)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinNode node = GetNode(fullPath) as AddinNode;
             if (node == null) return;
             AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
@@ -209,6 +263,7 @@ namespace Tumbler.Addin.Core
         /// <returns>插件树节点。</returns>
         public AddinTreeNode GetNode(String fullPath)
         {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
             if (String.IsNullOrWhiteSpace(fullPath)) return null;
             fullPath = AddinTreeNode.CompletePath(fullPath);
             if (_nodes.ContainsKey(fullPath))

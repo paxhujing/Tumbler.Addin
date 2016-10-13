@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Tumber.Addin.Common;
+using Tumbler.Addin.Core;
 
 namespace Tumbler.Addin.WfpTest.Menu
 {
@@ -32,6 +33,11 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Execute()
         {
+            IAddin[] addins = AddinManager.Instance.BuildChildAddins(this);
+            foreach (IAddin addin in addins)
+            {
+                AddChild(addin);
+            }
         }
 
         public void Initialize()
@@ -65,6 +71,12 @@ namespace Tumbler.Addin.WfpTest.Menu
             {
                 IsEnabled = false;
             }
+        }
+
+        private void Menu_Loaded(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            Execute();
         }
     }
 }

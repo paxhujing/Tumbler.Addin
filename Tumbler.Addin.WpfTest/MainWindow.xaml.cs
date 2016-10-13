@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Tumber.Addin.Common;
+using Tumbler.Addin.Core;
 
 namespace Tumbler.Addin.WpfTest
 {
@@ -20,9 +22,14 @@ namespace Tumbler.Addin.WpfTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        private AddinManager _manager = AddinManager.Instance;
+
         public MainWindow()
         {
             InitializeComponent();
+            _manager.Initialize(@"E:\Tumbler.Addin\Tumbler.Addin.WpfTest\Addins.xml");
+            IAddin addin = _manager.BuildFirstLevelAddins()[0];
+            MenuPanel.Content = addin;
         }
     }
 }
