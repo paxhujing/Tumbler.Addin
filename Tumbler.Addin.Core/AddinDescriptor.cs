@@ -21,8 +21,6 @@ namespace Tumbler.Addin.Core
 
         private static readonly Dictionary<String, Collection<AddinDescriptor>> DepdencieTable = new Dictionary<String, Collection<AddinDescriptor>>();
 
-        private Boolean _isAnalysisPassed;
-
         #endregion
 
         #region Constructors
@@ -73,21 +71,26 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public IAddin Addin { get; private set; }
 
+        /// <summary>
+        /// 插件的构建状态。
+        /// </summary>
+        public AddinBuildState BuildState { get; private set; }
+
         #region AddinState
 
-        private AddinState _state;
+        private AddinState _addinState;
 
         /// <summary>
         /// 获取插件的状态。
         /// </summary>
-        public AddinState State
+        public AddinState AddinState
         {
-            get { return _state; }
-            private set
+            get { return _addinState; }
+            internal set
             {
-                if(_state != value)
+                if(_addinState != value)
                 {
-                    _state = value;
+                    _addinState = value;
                     OnStateChanged(value);
                 }
             }
@@ -128,7 +131,7 @@ namespace Tumbler.Addin.Core
             if (xml == null) throw new FileLoadException("Invalid addin config file");
             IEnumerable<XAttribute> referencesAttr = xml.Element("Assemblies")?.Elements("Reference")?.Attributes("Path");
             String[] references = referencesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
-            IEnumerable<XAttribute> dependenciesAttr = xml.Element("Dependencies")?.Elements("Dependecy")?.Attributes("Path");
+            IEnumerable<XAttribute> dependenciesAttr = xml.Element("Dependencies")?.Elements("Dependency")?.Attributes("Path");
             String[] dependencies = dependenciesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
             return new AddinDescriptor(xml.Attribute("Type")?.Value,owner, references, dependencies);
         }
@@ -139,13 +142,17 @@ namespace Tumbler.Addin.Core
         /// <returns>代表了插件的对象，例如一个UI元素。</returns>
         public IAddin Build()
         {
-            if (State == AddinState.None)
+            if (BuildState == AddinBuildState.BuildFail) return null;
+            if (BuildState == AddinBuildState.None)
             {
+                BuildState = AddinBuildState.BuildFail;
                 IAddin addin = LoadAddin();
                 addin.Initialize(Owner.Manager);
+                //如果构建过程中没有出现异常会执行此句代码
+                BuildState = AddinBuildState.Build;
                 AddinsDescriptor.Add(addin, this);
                 Addin = addin;
-                State = AddinState.Build;
+                InitializeAddinState();
             }
             return Addin;
         }
@@ -155,13 +162,13 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public void Destroy()
         {
-            if (State != AddinState.None)
+            if (BuildState != AddinBuildState.None)
             {
                 RemoveDependencies();
                 AddinsDescriptor.Remove(Addin);
                 Addin.Dispose();
                 Addin = null;
-                State = AddinState.None;
+                BuildState = AddinBuildState.None;
             }
         }
 
@@ -175,13 +182,9 @@ namespace Tumbler.Addin.Core
         /// <returns>插件实例。</returns>
         private IAddin LoadAddin()
         {
-            if(!_isAnalysisPassed)
-            {
-                AnalysisDependencies();
-                AnalysisAssemblies();
-                BuildDependencies();
-            }
-            _isAnalysisPassed = true;
+            AnalysisDependencies();
+            AnalysisAssemblies();
+            BuildDependencies();
             return CreateInstance();
         }
 
@@ -266,6 +269,20 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 初始化插件状态。
+        /// </summary>
+        private void InitializeAddinState()
+        {
+            AddinManager manager = Owner.Manager;
+            AddinState? state = null;
+            for (Int32 i = 0; i < Dependencies.Length; i++)
+            {
+                state = manager.GetAddinState(Dependencies[i]);
+                Addin.OnDependencyStateChanged(Dependencies[i], state);
+            }
+        }
+
+        /// <summary>
         /// 移除依赖。
         /// </summary>
         private void RemoveDependencies()
@@ -298,7 +315,7 @@ namespace Tumbler.Addin.Core
                 Collection<AddinDescriptor> targets = DepdencieTable[fullPath];
                 foreach(AddinDescriptor target in targets)
                 {
-                    if(target.State == AddinState.Build)
+                    if(target.BuildState == AddinBuildState.Build)
                     {
                         target.Addin.OnDependencyStateChanged(fullPath, newState);
                     }

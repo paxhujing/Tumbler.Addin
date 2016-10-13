@@ -8,26 +8,26 @@ using static System.Diagnostics.Debug;
 
 namespace Tumbler.Addin.CoreTests
 {
-    public class MenuAddin : IAddin
+    public class ToolbarAddin : IAddin
     {
         public void Dispose()
         {
-            WriteLine("Destroy MenuAddin");
+            WriteLine("Destroy ToolbarAddin");
         }
 
         public void Execute()
         {
-            WriteLine("Execute MenuAddin");
+            WriteLine("Execute ToolbarAddin");
         }
 
         public void Initialize(AddinManager manager)
         {
-            WriteLine("Initialize MenuAddin");
+            WriteLine("Initialize ToolbarAddin");
         }
 
         public void OnDependencyStateChanged(String fullPath, AddinState? state)
         {
-            WriteLine($"MenuAddin Depend on {fullPath}--[{state}]");
+            WriteLine($"ToolbarAddin Depden on {fullPath}--[{state}]");
         }
     }
 }

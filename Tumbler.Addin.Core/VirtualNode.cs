@@ -26,14 +26,5 @@ namespace Tumbler.Addin.Core
         }
 
         #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// 获取一个标识，表明该节点是否是一个虚拟节点而不是实际的插件节点。
-        /// </summary>
-        public override bool IsVirtual { get; } = true;
-
-        #endregion
     }
 }

@@ -115,7 +115,50 @@ namespace Tumbler.Addin.Core
             {
                 removeItem.Remove();
             }
-            xml.Save(configFile);
+            xml.Save(ConfigFile);
+        }
+
+        /// <summary>
+        /// 获取指定路径的插件状态。
+        /// </summary>
+        /// <param name="fullPath">插件所在完整路径。</param>
+        /// <returns>插件状态。如果为null表示当前无法获取到插件的状态，可能是当前节点不是插件节点AddinNode，或者插件还未构建。</returns>
+        public AddinState? GetAddinState(String fullPath)
+        {
+            AddinTreeNode node = GetNode(fullPath);
+            if (node == null) throw new InvalidOperationException("Unknow path");
+            AddinNode addinNode = node as AddinNode;
+            if(addinNode != null && addinNode.Descriptor.IsValueCreated)
+            {
+                return addinNode.Descriptor.Value.AddinState;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 获取插件的状态。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>插件状态。如果为null表示插件管理器无法跟踪该插件。</returns>
+        public AddinState? GetAddinState(IAddin addin)
+        {
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return null;
+            return descriptor.AddinState;
+        }
+
+        /// <summary>
+        /// 设置插件的状态。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <param name="state">状态。</param>
+        /// <returns>设置成功返回true；否则返回false。</returns>
+        public Boolean SetAddinState(IAddin addin, AddinState state)
+        {
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return false;
+            descriptor.AddinState = state;
+            return true;
         }
 
         /// <summary>
@@ -149,7 +192,7 @@ namespace Tumbler.Addin.Core
             foreach (XElement element in xml.Elements("Addin"))
             {
                 node = GetAddinTreeNode(element);
-                if (node != null)
+                if (node != null && !_nodes.ContainsKey(node.FullPath))
                 {
                     _nodes.Add(node.FullPath, node);
                 }

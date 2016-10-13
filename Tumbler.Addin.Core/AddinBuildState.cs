@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 namespace Tumbler.Addin.Core
 {
     /// <summary>
-    /// 表示插件当前的状态。
+    /// 插件的构建状态状态。
     /// </summary>
-    public enum AddinState
+    internal enum AddinBuildState
     {
         /// <summary>
-        /// 启用。
+        /// 未构建插件的实例。
         /// </summary>
-        Enable,
+        None,
         /// <summary>
-        /// 禁用
+        /// 构建失败。
         /// </summary>
-        Disable,
+        BuildFail,
+        /// <summary>
+        /// 已构建插件的实例。
+        /// </summary>
+        Build,
     }
 }

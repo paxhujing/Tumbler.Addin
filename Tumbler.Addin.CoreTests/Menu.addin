@@ -12,6 +12,7 @@
 
     <!--依赖的其它插件-->
     <Dependencies>
+      <Dependency Path="/Addins/Toolbar"/>
     </Dependencies>
 
   </Runtimes>

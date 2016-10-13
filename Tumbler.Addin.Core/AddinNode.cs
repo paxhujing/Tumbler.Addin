@@ -41,11 +41,6 @@ namespace Tumbler.Addin.Core
         public String ConfigFile { get; set; }
 
         /// <summary>
-        /// 获取一个标识，表明该节点是否是一个虚拟节点而不是实际的插件节点。
-        /// </summary>
-        public override bool IsVirtual { get; } = false;
-
-        /// <summary>
         /// 获取插件的描述。
         /// </summary>
         internal Lazy<AddinDescriptor> Descriptor { get;}

@@ -44,6 +44,7 @@
     <Compile Include="AddinAssembliesException.cs" />
     <Compile Include="AddinDependencyException.cs" />
     <Compile Include="AddinDescriptor.cs" />
+    <Compile Include="AddinBuildState.cs" />
     <Compile Include="AddinManager.cs" />
     <Compile Include="AddinNode.cs" />
     <Compile Include="AddinState.cs" />
