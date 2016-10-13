@@ -53,10 +53,10 @@
     <Compile Include="VirtualNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AddinTemplate.addin">
+    <None Include="AddinTemplate.addin">
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Addins.xml" />
+    </None>
+    <None Include="Addins.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tumber.Addin.Common\Tumber.Addin.Common.csproj">
