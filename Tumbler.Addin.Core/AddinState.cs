@@ -27,9 +27,5 @@ namespace Tumbler.Addin.Core
         /// 禁用
         /// </summary>
         Disable,
-        /// <summary>
-        /// 更新。
-        /// </summary>
-        Update
     }
 }

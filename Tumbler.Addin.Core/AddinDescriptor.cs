@@ -19,6 +19,10 @@ namespace Tumbler.Addin.Core
 
         private static readonly Dictionary<IAddin, AddinDescriptor> AddinsDescriptor = new Dictionary<IAddin, AddinDescriptor>();
 
+        private static readonly Dictionary<String, Collection<AddinDescriptor>> Depdencies = new Dictionary<String, Collection<AddinDescriptor>>();
+
+        private Boolean _isAnalysisPassed;
+
         #endregion
 
         #region Constructors
@@ -37,7 +41,7 @@ namespace Tumbler.Addin.Core
             Owner = owner;
             Type = type;
             References = references;
-            Dependencies = depedencies;
+            Dependencies = depedencies.Select(x => AddinTreeNode.CompletePath(x)).ToArray();
         }
 
         #endregion
@@ -71,13 +75,22 @@ namespace Tumbler.Addin.Core
 
         #region AddinState
 
+        private AddinState _state;
+
         /// <summary>
         /// 获取插件的状态。
         /// </summary>
         public AddinState State
         {
-            get;
-            internal set;
+            get { return _state; }
+            private set
+            {
+                if(_state != value)
+                {
+                    _state = value;
+                    OnStateChanged(value);
+                }
+            }
         }
 
         #endregion
@@ -136,6 +149,20 @@ namespace Tumbler.Addin.Core
             return Addin;
         }
 
+        /// <summary>
+        /// 销毁插件实例。
+        /// </summary>
+        public void Destroy()
+        {
+            if (State != AddinState.None)
+            {
+                AddinsDescriptor.Remove(Addin);
+                Addin.Dispose();
+                Addin = null;
+                State = AddinState.None;
+            }
+        }
+
         #endregion
 
         #region Private
@@ -146,8 +173,13 @@ namespace Tumbler.Addin.Core
         /// <returns>插件实例。</returns>
         private IAddin LoadAddin()
         {
-            AnalysisDependencies();
-            AnalysisAssemblies();
+            if(!_isAnalysisPassed)
+            {
+                AnalysisDependencies();
+                AnalysisAssemblies();
+
+            }
+            _isAnalysisPassed = true;
             return CreateInstance();
         }
 
@@ -204,6 +236,27 @@ namespace Tumbler.Addin.Core
             {
                 throw new AddinAssembliesException(unresoles.ToArray());
             }
+            Type type = System.Type.GetType(Type);
+            if (type == null) throw new TypeLoadException(Type);
+            if (type.GetInterface(typeof(IAddin).FullName) == null)
+            {
+                throw new TypeLoadException($"{type.FullName} must implement IAddin interface");
+            }
+        }
+
+        /// <summary>
+        /// 构建依赖项。
+        /// </summary>
+        private void BuildDependencies()
+        {
+            foreach(String dependency in Dependencies)
+            {
+                if (!AddinDescriptor.Depdencies.ContainsKey(dependency))
+                {
+                    AddinDescriptor.Depdencies.Add(dependency, new Collection<AddinDescriptor>());
+                }
+                AddinDescriptor.Depdencies[dependency].Add(this);
+            }
         }
 
         /// <summary>
@@ -213,12 +266,27 @@ namespace Tumbler.Addin.Core
         private IAddin CreateInstance()
         {
             Type type = System.Type.GetType(Type);
-            if (type == null) throw new TypeLoadException(Type);
-            if (type.GetInterface(typeof(IAddin).FullName) == null)
-            {
-                throw new TypeLoadException(type.FullName);
-            }
             return (IAddin)Activator.CreateInstance(type);
+        }
+
+        /// <summary>
+        /// 状态改变时执行。
+        /// </summary>
+        /// <param name="newState">新状态。</param>
+        private void OnStateChanged(AddinState newState)
+        {
+            String fullPath = this.Owner.FullPath;
+            if(Depdencies.ContainsKey(fullPath))
+            {
+                Collection<AddinDescriptor> targets = Depdencies[fullPath];
+                foreach(AddinDescriptor target in targets)
+                {
+                    if(target.State == AddinState.Build)
+                    {
+                        target.Addin.OnDependencyStateChanged(fullPath, newState);
+                    }
+                }
+            }
         }
 
         #endregion

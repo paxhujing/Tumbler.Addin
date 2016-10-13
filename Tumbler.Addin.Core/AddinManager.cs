@@ -30,8 +30,10 @@ namespace Tumbler.Addin.Core
         /// <param name="configFile">服务配置文件。</param>
         public AddinManager(String configFile)
         {
-            _root = new RootNode(this);
+            if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
+            if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
             ConfigFile = configFile;
+            _root = new RootNode(this);
             _nodes.Add(_root.FullPath, _root);
             _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
             _nodes.Add(_root.InnerChildren[1].FullPath, _root.InnerChildren[1]);
@@ -85,8 +87,37 @@ namespace Tumbler.Addin.Core
         public IAddin[] BuildChildAddins(IAddin addin)
         {
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) throw new ArgumentNullException("descriptor");
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             return BuildlAddins(descriptor.Owner.Children);
+        }
+
+        /// <summary>
+        /// 销毁插件。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        public void Destroy(IAddin addin)
+        {
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
+            descriptor.Destroy();
+        }
+
+        /// <summary>
+        /// 销毁插件。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        public void Uninstall(IAddin addin)
+        {
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
+            String configFile = ((AddinNode)descriptor.Owner).ConfigFile;
+            XElement xml = XElement.Load(ConfigFile);
+            XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == configFile);
+            if(removeItem != null)
+            {
+                removeItem.Remove();
+            }
+            xml.Save(configFile);
         }
 
         /// <summary>

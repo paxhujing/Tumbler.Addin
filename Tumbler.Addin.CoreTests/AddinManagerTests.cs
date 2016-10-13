@@ -13,10 +13,15 @@ namespace Tumbler.Addin.Core.Tests
     {
         AddinManager _manager = new AddinManager(@"E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Addins.xml");
 
+        public AddinManagerTests()
+        {
+            _manager.Initialize();
+        }
+
         [TestMethod()]
         public void InitializeTest()
         {
-            _manager.Initialize();
+            //_manager.Initialize();
             Assert.AreEqual<Int32>(6, _manager.Count);
         }
 
@@ -34,8 +39,13 @@ namespace Tumbler.Addin.Core.Tests
         [TestMethod()]
         public void BuildTest()
         {
-            _manager.Initialize();
             IAddin[] addins = _manager.BuildFirstLevelAddins();
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void UninstallTest()
+        {
             Assert.Fail();
         }
     }

@@ -7,8 +7,8 @@
     
     <!--引用的程序集-->
     <Assemblies>
-      <Reference Path=".\Addins\Addin.Menu.dll"/>
-      <Reference Path=".\Addins\Addin.Tool.dll"/>
+      <Reference Path="./Addins/Addin.Menu.dll"/>
+      <Reference Path="./Addins/Addin.Tool.dll"/>
     </Assemblies>
 
     <!--依赖的其它插件-->
