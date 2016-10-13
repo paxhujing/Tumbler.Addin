@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Tumbler.Addin.WfpTest.Menu
     /// <summary>
     /// UserControl1.xaml 的交互逻辑
     /// </summary>
-    public partial class MenuAddin : System.Windows.Controls.Menu, IAddin
+    public partial class MenuAddin : System.Windows.Controls.Menu, IAddin ,IHandler
     {
         public MenuAddin()
         {
@@ -38,6 +39,11 @@ namespace Tumbler.Addin.WfpTest.Menu
             {
                 AddChild(addin);
             }
+        }
+
+        public void Handle(Hashtable message)
+        {
+            MessageBox.Show("Hadle request");
         }
 
         public void Initialize()
@@ -77,6 +83,8 @@ namespace Tumbler.Addin.WfpTest.Menu
         {
             e.Handled = true;
             Execute();
+            //IsEnabled = false;
+            //AddinManager.Instance.SetAddinState(this, AddinState.Disable);
         }
     }
 }

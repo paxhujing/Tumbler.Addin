@@ -33,6 +33,7 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Execute()
         {
+            AddinManager.Instance.SendMessage("./Addins/Menu", new System.Collections.Hashtable());
             AddinManagerWin win = new AddinManagerWin();
             win.ShowDialog();
         }
@@ -43,6 +44,7 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void OnDependencyStateChanged(string fullPath, AddinState? state)
         {
+            MessageBox.Show($"{fullPath} state changed {state}");
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
