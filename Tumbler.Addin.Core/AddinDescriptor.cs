@@ -22,6 +22,8 @@ namespace Tumbler.Addin.Core
 
         private static readonly Dictionary<String, Collection<AddinDescriptor>> DepdencieTable = new Dictionary<String, Collection<AddinDescriptor>>();
 
+        private Type _type;
+
         #endregion
 
         #region Constructors
@@ -94,7 +96,7 @@ namespace Tumbler.Addin.Core
             get { return _addinState; }
             internal set
             {
-                if(_addinState != value)
+                if (_addinState != value)
                 {
                     _addinState = value;
                     OnStateChanged(value);
@@ -139,7 +141,18 @@ namespace Tumbler.Addin.Core
             String[] references = referencesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
             IEnumerable<XAttribute> dependenciesAttr = xml.Element("Dependencies")?.Elements("Dependency")?.Attributes("Path");
             String[] dependencies = dependenciesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
-            return new AddinDescriptor(xml.Attribute("Type")?.Value,owner, references, dependencies);
+            return new AddinDescriptor(xml.Attribute("Type")?.Value, owner, references, dependencies);
+        }
+
+        /// <summary>
+        /// 解析依赖，加载程序集和类型。
+        /// </summary>
+        private void Analysis()
+        {
+            AnalysisDependencies();
+            AnalysisAssemblies();
+            BuildDependencies();
+            BuildState = AddinBuildState.NotBuild;
         }
 
         /// <summary>
@@ -148,19 +161,23 @@ namespace Tumbler.Addin.Core
         /// <returns>代表了插件的对象，例如一个UI元素。</returns>
         public IAddin Build()
         {
-            if (BuildState == AddinBuildState.BuildFail) return null;
-            if (BuildState == AddinBuildState.None)
+            AddinBuildState state = BuildState;
+            switch(state)
             {
-                BuildState = AddinBuildState.BuildFail;
-                IAddin addin = LoadAddin();
-                addin.Initialize();
-                //如果构建过程中没有出现异常会执行此句代码
-                BuildState = AddinBuildState.Build;
-                AddinsDescriptor.Add(addin, this);
-                Addin = addin;
-                InitializeAddinState();
+                case AddinBuildState.Build:
+                    return Addin;
+                case AddinBuildState.NotBuild:
+                    return GetInstance();
+                case AddinBuildState.DependecyFail:
+                case AddinBuildState.LoadAssemblyFail:
+                case AddinBuildState.LoadTypeFail:
+                    return null;
+                case AddinBuildState.NotAnalysis:
+                    Analysis();
+                    return GetInstance();
+                default:
+                    return null;
             }
-            return Addin;
         }
 
         /// <summary>
@@ -174,7 +191,7 @@ namespace Tumbler.Addin.Core
                 AddinsDescriptor.Remove(Addin);
                 Addin.Dispose();
                 Addin = null;
-                BuildState = AddinBuildState.None;
+                BuildState = AddinBuildState.NotBuild;
             }
         }
 
@@ -183,15 +200,18 @@ namespace Tumbler.Addin.Core
         #region Private
 
         /// <summary>
-        /// 加载插件。
+        /// 创建插件实例。
         /// </summary>
         /// <returns>插件实例。</returns>
-        private IAddin LoadAddin()
+        private IAddin GetInstance()
         {
-            AnalysisDependencies();
-            AnalysisAssemblies();
-            BuildDependencies();
-            return CreateInstance();
+            IAddin addin = (IAddin)Activator.CreateInstance(_type);
+            addin.Initialize();
+            AddinsDescriptor.Add(addin, this);
+            Addin = addin;
+            InitializeAddinState();
+            BuildState = AddinBuildState.Build;
+            return addin;
         }
 
         /// <summary>
@@ -215,6 +235,7 @@ namespace Tumbler.Addin.Core
             }
             if (unresoles.Count != 0)
             {
+                BuildState = AddinBuildState.DependecyFail;
                 throw new AddinDependencyException(unresoles.ToArray());
             }
         }
@@ -225,6 +246,47 @@ namespace Tumbler.Addin.Core
         private void AnalysisAssemblies()
         {
             if (References.Length == 0) return;
+            LoadAssemblies();
+            Type type = System.Type.GetType(Type, 
+                (n)=>
+                {
+                    Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    AssemblyName an = null;
+                    for (Int32 i = 0; i < assemblies.Length; i++)
+                    {
+                        an = assemblies[i].GetName();
+                        if (an.Name == n.Name || an.FullName == n.FullName)
+                        {
+                            return assemblies[i];
+                        }
+                    }
+                    return null;
+                },
+                (a,s,b)=>
+                {
+                    _type = a.GetType(s);
+                    if (_type == null)
+                    {
+                        BuildState = AddinBuildState.LoadTypeFail;
+                    }
+                    return _type;
+                },true);
+            if (type.GetInterface(typeof(IAddin).FullName) == null)
+            {
+                BuildState = AddinBuildState.LoadTypeFail;
+                throw new TypeLoadException($"{type.FullName} must implement IAddin interface");
+            }
+            if (type.GetInterface(typeof(IHandler).FullName) != null)
+            {
+                CanRecieveMessage = true;
+            }
+        }
+
+        /// <summary>
+        /// 加载程序集。
+        /// </summary>
+        private void LoadAssemblies()
+        {
             AssemblyName aname = null;
             String fullName = null;
             Collection<String> unresoles = new Collection<String>();
@@ -247,17 +309,8 @@ namespace Tumbler.Addin.Core
             }
             if (unresoles.Count != 0)
             {
+                BuildState = AddinBuildState.LoadAssemblyFail;
                 throw new AddinAssembliesException(unresoles.ToArray());
-            }
-            Type type = System.Type.GetType(Type);
-            if (type == null) throw new TypeLoadException(Type);
-            if (type.GetInterface(typeof(IAddin).FullName) == null)
-            {
-                throw new TypeLoadException($"{type.FullName} must implement IAddin interface");
-            }
-            if (type.GetInterface(typeof(IHandler).FullName) != null)
-            {
-                CanRecieveMessage = true;
             }
         }
 
@@ -301,16 +354,6 @@ namespace Tumbler.Addin.Core
             {
                 AddinDescriptor.DepdencieTable.Remove(Dependencies[i]);
             }
-        }
-
-        /// <summary>
-        /// 创建插件实例。
-        /// </summary>
-        /// <returns>件实例。</returns>
-        private IAddin CreateInstance()
-        {
-            Type type = System.Type.GetType(Type);
-            return (IAddin)Activator.CreateInstance(type);
         }
 
         /// <summary>
