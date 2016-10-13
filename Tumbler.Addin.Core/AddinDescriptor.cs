@@ -27,17 +27,15 @@ namespace Tumbler.Addin.Core
         /// 初始化类型 Tumbler.Addin.Core.AddinDescriptor 实例。
         /// </summary>
         /// <param name="type">实现了IAddin接口的类型名称。</param>
-        /// <param name="label">插件的标签。</param>
         /// <param name="owner">拥有此描述符的插件节点。</param>
         /// <param name="references"></param>
         /// <param name="depedencies"></param>
-        private AddinDescriptor(String type, String label, AddinTreeNode owner, String[] references, String[] depedencies)
+        private AddinDescriptor(String type, AddinTreeNode owner, String[] references, String[] depedencies)
         {
             if (String.IsNullOrWhiteSpace(type)) throw new ArgumentNullException("type");
             if (owner == null) throw new ArgumentNullException("owner");
             Owner = owner;
             Type = type;
-            Label = label;
             References = references;
             Dependencies = depedencies;
         }
@@ -65,11 +63,6 @@ namespace Tumbler.Addin.Core
         /// 获取实现了IAddin接口的类型名称。
         /// </summary>
         public String Type { get; }
-
-        /// <summary>
-        /// 获取插件的标签。
-        /// </summary>
-        public String Label { get; }
 
         /// <summary>
         /// 获取描述的插件对象。
@@ -118,15 +111,13 @@ namespace Tumbler.Addin.Core
         public static AddinDescriptor Parse(String configFile, AddinTreeNode owner)
         {
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
-            XElement xml = XElement.Load(configFile);
+            XElement xml = XElement.Load(configFile)?.Element("Runtimes");
             if (xml == null) throw new FileLoadException("Invalid addin config file");
             IEnumerable<XAttribute> referencesAttr = xml.Element("Assemblies")?.Elements("Reference")?.Attributes("Path");
             String[] references = referencesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
             IEnumerable<XAttribute> dependenciesAttr = xml.Element("Dependencies")?.Elements("Dependecy")?.Attributes("Path");
             String[] dependencies = dependenciesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
-            XElement codon = xml.Element("Codon");
-            if (codon == null) throw new MissingMemberException("Codon");
-            return new AddinDescriptor(codon.Attribute("Type")?.Value, codon.Attribute("Label")?.Value, owner, references, dependencies);
+            return new AddinDescriptor(xml.Attribute("Type")?.Value,owner, references, dependencies);
         }
 
         /// <summary>
@@ -138,7 +129,6 @@ namespace Tumbler.Addin.Core
             if (State == AddinState.None)
             {
                 IAddin addin = LoadAddin();
-                addin.Initialize(Label);
                 AddinsDescriptor.Add(addin, this);
                 Addin = addin;
                 State = AddinState.Build;

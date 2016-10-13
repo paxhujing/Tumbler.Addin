@@ -14,8 +14,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化插件。
         /// </summary>
-        /// <param name="label">插件标签。</param>
-        void Initialize(String label);
+        void Initialize();
 
         /// <summary>
         /// 执行插件提供的功能。

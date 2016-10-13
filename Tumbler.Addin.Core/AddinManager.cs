@@ -138,7 +138,7 @@ namespace Tumbler.Addin.Core
             if (attribute == null) return null;
             String file = attribute.Value;
             if (String.IsNullOrWhiteSpace(file) || !File.Exists(file)) return null;
-            XElement xml = XElement.Load(file);
+            XElement xml = XElement.Load(file)?.Element("Runtimes");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             return new AddinNode(xml.Attribute("Path")?.Value, xml.Attribute("Id").Value, this, file);
         }

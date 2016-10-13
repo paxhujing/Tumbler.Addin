@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Addin Path="/Addins" Id="Menu">
+<Addin>
 
-  <!--插件基本信息-->
   <Info Name="" Author="" Copyright="" Version="" Url="" Description=""/>
-      
-  <!--引用的程序集-->
-  <Assemblies>
-    <Reference Path=".\Addins\Addin.Menu.dll"/>
-    <Reference Path=".\Addins\Addin.Tool.dll"/>
-  </Assemblies>
-  
-  <!--依赖的其它插件-->
-  <Dependencies>
-    <Dependecy Path="/Addin/Editor/TextEditor"/>
-  </Dependencies>
 
-  <!--Codon 表示插件-->
-  <!--对应一个实现了IAddin接口的类型-->
-  <Codon Label="菜单栏" Type="Addin.Menu.OpenFile,Addin.Menu" />
+  <Runtimes Path="/Addins" Id="Menu" Type="Addin.Menu.OpenFile,Addin.Menu">
+
+    <!--引用的程序集-->
+    <Assemblies>
+      <Reference Path=".\Addins\Addin.Menu.dll"/>
+      <Reference Path=".\Addins\Addin.Tool.dll"/>
+    </Assemblies>
+
+    <!--依赖的其它插件-->
+    <Dependencies>
+      <Dependecy Path="/Addin/Editor/TextEditor"/>
+    </Dependencies>
+
+  </Runtimes>
+
 </Addin>

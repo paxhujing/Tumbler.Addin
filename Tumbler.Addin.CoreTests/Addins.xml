@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--根据插件的Path属性生成的树-->
 <Addins>
-  <!--<Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\BadAddin.addin"/>
+  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\BadAddin.addin"/>
   <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\File.addin"/>
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\FontSelector.addin"/>-->
+  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\FontSelector.addin"/>
   <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Menu.addin"/>
-  <!--<Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\OpenFile.addin"/>
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Toolbar.addin"/>-->
+  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\OpenFile.addin"/>
+  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Toolbar.addin"/>
 </Addins>
