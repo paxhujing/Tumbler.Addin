@@ -48,5 +48,28 @@ namespace Tumbler.Addin.Core.Tests
         {
             Assert.Fail();
         }
+
+        [TestMethod()]
+        public void BuildFirstLevelAddinsTest()
+        {
+            IAddin[] addins = _manager.BuildFirstLevelAddins();
+            foreach(IAddin addin in addins)
+            {
+                _manager.Destroy(addin);
+            }
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void DestroyTest()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void UninstallTest1()
+        {
+            Assert.Fail();
+        }
     }
 }

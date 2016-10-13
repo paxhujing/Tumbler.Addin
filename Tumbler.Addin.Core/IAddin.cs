@@ -14,7 +14,8 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化插件。
         /// </summary>
-        void Initialize();
+        /// <param name="manager">插件管理器。</param>
+        void Initialize(AddinManager manager);
 
         /// <summary>
         /// 执行插件提供的功能。

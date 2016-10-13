@@ -30,8 +30,8 @@ namespace Tumbler.Addin.Core
         /// </summary>
         /// <param name="path">挂载点。</param>
         /// <param name="id">插件Id。</param>
-        /// <param name="owner">拥有此插件树节点的管理器。</param>
-        protected AddinTreeNode(String path, String id, AddinManager owner)
+        /// <param name="manager">拥有此插件树节点的管理器。</param>
+        protected AddinTreeNode(String path, String id, AddinManager manager)
         {
             if (path == null)
             {
@@ -41,11 +41,11 @@ namespace Tumbler.Addin.Core
             {
                 throw new ArgumentNullException("id");
             }
-            if (owner == null)
+            if (manager == null)
             {
                 throw new ArgumentNullException("owner");
             }
-            Owner = owner;
+            Manager = manager;
             path = CompletePath(path);
             if (!String.IsNullOrWhiteSpace(path))
             {
@@ -83,7 +83,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 拥有此插件树节点的管理器。
         /// </summary>
-        public AddinManager Owner { get; }
+        public AddinManager Manager { get; }
 
         /// <summary>
         /// 获取完整路径。

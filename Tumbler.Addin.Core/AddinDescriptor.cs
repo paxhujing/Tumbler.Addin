@@ -19,7 +19,7 @@ namespace Tumbler.Addin.Core
 
         private static readonly Dictionary<IAddin, AddinDescriptor> AddinsDescriptor = new Dictionary<IAddin, AddinDescriptor>();
 
-        private static readonly Dictionary<String, Collection<AddinDescriptor>> Depdencies = new Dictionary<String, Collection<AddinDescriptor>>();
+        private static readonly Dictionary<String, Collection<AddinDescriptor>> DepdencieTable = new Dictionary<String, Collection<AddinDescriptor>>();
 
         private Boolean _isAnalysisPassed;
 
@@ -142,6 +142,7 @@ namespace Tumbler.Addin.Core
             if (State == AddinState.None)
             {
                 IAddin addin = LoadAddin();
+                addin.Initialize(Owner.Manager);
                 AddinsDescriptor.Add(addin, this);
                 Addin = addin;
                 State = AddinState.Build;
@@ -156,6 +157,7 @@ namespace Tumbler.Addin.Core
         {
             if (State != AddinState.None)
             {
+                RemoveDependencies();
                 AddinsDescriptor.Remove(Addin);
                 Addin.Dispose();
                 Addin = null;
@@ -177,7 +179,7 @@ namespace Tumbler.Addin.Core
             {
                 AnalysisDependencies();
                 AnalysisAssemblies();
-
+                BuildDependencies();
             }
             _isAnalysisPassed = true;
             return CreateInstance();
@@ -189,11 +191,13 @@ namespace Tumbler.Addin.Core
         private void AnalysisDependencies()
         {
             if (Dependencies.Length == 0) return;
-            AddinManager manager = Owner.Owner;
+            AddinManager manager = Owner.Manager;
             Collection<String> unresoles = new Collection<String>();
             AddinTreeNode node = null;
-            foreach (String dependency in Dependencies)
+            String dependency = null;
+            for (Int32 i = 0; i < Dependencies.Length; i++)
             {
+                dependency = Dependencies[i];
                 node = manager.GetNode(dependency);
                 if (node == null)
                 {
@@ -232,7 +236,7 @@ namespace Tumbler.Addin.Core
                     unresoles.Add(reference);
                 }
             }
-            if (unresoles.Count == 0)
+            if (unresoles.Count != 0)
             {
                 throw new AddinAssembliesException(unresoles.ToArray());
             }
@@ -249,13 +253,26 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void BuildDependencies()
         {
-            foreach(String dependency in Dependencies)
+            String dependency = null;
+            for (Int32 i = 0; i < Dependencies.Length; i++)
             {
-                if (!AddinDescriptor.Depdencies.ContainsKey(dependency))
+                dependency = Dependencies[i];
+                if (!AddinDescriptor.DepdencieTable.ContainsKey(dependency))
                 {
-                    AddinDescriptor.Depdencies.Add(dependency, new Collection<AddinDescriptor>());
+                    AddinDescriptor.DepdencieTable.Add(dependency, new Collection<AddinDescriptor>());
                 }
-                AddinDescriptor.Depdencies[dependency].Add(this);
+                AddinDescriptor.DepdencieTable[dependency].Add(this);
+            }
+        }
+
+        /// <summary>
+        /// 移除依赖。
+        /// </summary>
+        private void RemoveDependencies()
+        {
+            for (Int32 i = 0; i < Dependencies.Length; i++)
+            {
+                AddinDescriptor.DepdencieTable.Remove(Dependencies[i]);
             }
         }
 
@@ -276,9 +293,9 @@ namespace Tumbler.Addin.Core
         private void OnStateChanged(AddinState newState)
         {
             String fullPath = this.Owner.FullPath;
-            if(Depdencies.ContainsKey(fullPath))
+            if(DepdencieTable.ContainsKey(fullPath))
             {
-                Collection<AddinDescriptor> targets = Depdencies[fullPath];
+                Collection<AddinDescriptor> targets = DepdencieTable[fullPath];
                 foreach(AddinDescriptor target in targets)
                 {
                     if(target.State == AddinState.Build)

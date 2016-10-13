@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="AddinManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MenuAddin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tumbler.Addin.Core\Tumbler.Addin.Core.csproj">

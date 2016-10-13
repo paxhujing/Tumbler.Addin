@@ -3,17 +3,15 @@
 
   <Info Name="" Author="" Copyright="" Version="" Url="" Description=""/>
 
-  <Runtimes Path="/Addins" Id="Menu" Type="Addin.Menu.OpenFile,Addin.Menu">
+  <Runtimes Path="/Addins" Id="Menu" Type="Tumbler.Addin.CoreTests.MenuAddin,Tumbler.Addin.CoreTests">
 
     <!--引用的程序集-->
     <Assemblies>
-      <Reference Path="./Addins/Addin.Menu.dll"/>
-      <Reference Path="./Addins/Addin.Tool.dll"/>
+      <Reference Path="E:/Tumbler.Addin/Tumbler.Addin.CoreTests/bin/Debug/Tumbler.Addin.CoreTests.dll"/>
     </Assemblies>
 
     <!--依赖的其它插件-->
     <Dependencies>
-      <Dependecy Path="/Addin/Editor/TextEditor"/>
     </Dependencies>
 
   </Runtimes>
