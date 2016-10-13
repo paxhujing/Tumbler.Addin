@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tumbler.Addin.Core
+namespace Tumber.Addin.Common
 {
     /// <summary>
     /// 表示可以处理来自其它插件的消息。

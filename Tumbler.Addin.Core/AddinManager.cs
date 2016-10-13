@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Tumber.Addin.Common;
 
 namespace Tumbler.Addin.Core
 {

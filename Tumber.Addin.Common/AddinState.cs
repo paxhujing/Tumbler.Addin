@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tumbler.Addin.Core
+namespace Tumber.Addin.Common
 {
     /// <summary>
     /// 表示插件当前的状态。

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Tumber.Addin.Common;
 
 namespace Tumbler.Addin.Core
 {
@@ -152,7 +153,7 @@ namespace Tumbler.Addin.Core
             {
                 BuildState = AddinBuildState.BuildFail;
                 IAddin addin = LoadAddin();
-                addin.Initialize(Owner.Manager);
+                addin.Initialize();
                 //如果构建过程中没有出现异常会执行此句代码
                 BuildState = AddinBuildState.Build;
                 AddinsDescriptor.Add(addin, this);
