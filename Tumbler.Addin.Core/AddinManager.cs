@@ -112,6 +112,26 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 构建第一级的所有服务。
+        /// </summary>
+        /// <returns>第一级的所有服务列表。</returns>
+        public IService[] BuildFirstLevelServices()
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            return (IService[])BuildlAddins(_root.Children[1].Children);
+        }
+
+        /// <summary>
+        /// 构建指定插件的下一级插件列表。
+        /// </summary>
+        /// <param name="service">下一级插件的父级服务。</param>
+        /// <returns>下一级服务列表。</returns>
+        public IService[] BuildChildService(IService service)
+        {
+            return (IService[])BuildChildAddins(service);
+        }
+
+        /// <summary>
         /// 销毁插件。
         /// </summary>
         /// <param name="addin">插件。</param>
