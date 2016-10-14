@@ -7,8 +7,8 @@
     <ProjectGuid>{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tumber.Addin.Common</RootNamespace>
-    <AssemblyName>Tumber.Addin.Common</AssemblyName>
+    <RootNamespace>Tumbler.Addin.Common</RootNamespace>
+    <AssemblyName>Tumbler.Addin.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Tumber.Addin.Common.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tumbler.Addin.Common.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

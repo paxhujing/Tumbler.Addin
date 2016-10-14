@@ -5,18 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tumber.Addin.Common;
+using Tumbler.Addin.Common;
 
 namespace Tumbler.Addin.Core.Tests
 {
     [TestClass()]
     public class AddinManagerTests
     {
-        AddinManager _manager = new AddinManager(@"E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Addins.xml");
+        AddinManager _manager = AddinManager.Instance;
 
         public AddinManagerTests()
         {
-            _manager.Initialize();
+            _manager.Initialize(@"E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Addins.xml");
         }
 
         [TestMethod()]
@@ -29,7 +29,6 @@ namespace Tumbler.Addin.Core.Tests
         [TestMethod()]
         public void GetNodeTest()
         {
-            _manager.Initialize();
             //AddinTreeNode badAddin = _manager.GetNode("OpenFile");
             //Assert.IsNull(badAddin, "Should be null");
 

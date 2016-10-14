@@ -57,9 +57,9 @@
     <Compile Include="ToolbarAddin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tumber.Addin.Common\Tumber.Addin.Common.csproj">
+    <ProjectReference Include="..\Tumber.Addin.Common\Tumbler.Addin.Common.csproj">
       <Project>{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}</Project>
-      <Name>Tumber.Addin.Common</Name>
+      <Name>Tumbler.Addin.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tumbler.Addin.Core\Tumbler.Addin.Core.csproj">
       <Project>{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}</Project>

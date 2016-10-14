@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Tumber.Addin.Common
+namespace Tumbler.Addin.Common
 {
     /// <summary>
     /// 插件基本信息。

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tumber.Addin.Common
+namespace Tumbler.Addin.Common
 {
     /// <summary>
     /// 表示一个服务。

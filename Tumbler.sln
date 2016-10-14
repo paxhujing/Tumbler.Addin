@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin.Menu", "Addin.Menu\Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.CoreTests", "Tumbler.Addin.CoreTests\Tumbler.Addin.CoreTests.csproj", "{943620F3-0DFE-443A-B520-CF39DE6687BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumber.Addin.Common", "Tumber.Addin.Common\Tumber.Addin.Common.csproj", "{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.Common", "Tumber.Addin.Common\Tumbler.Addin.Common.csproj", "{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.WpfTest", "Tumbler.Addin.WpfTest\Tumbler.Addin.WpfTest.csproj", "{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}"
 EndProject
