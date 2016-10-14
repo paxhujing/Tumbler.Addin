@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,6 +39,25 @@ namespace Tumbler.Addin.WfpTest.Menu
             Button btn = (Button)sender;
             AddinBaseInfo info = (AddinBaseInfo)btn.DataContext;
             AddinManager.Instance.Uninstall(info);
+        }
+
+        private void Install_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "插件配置文件(*.addin)|*.addin";
+            dialog.Multiselect = true;
+            Boolean? result = dialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                AddinBaseInfo info = null;
+                foreach (String fileName in dialog.FileNames)
+                {
+                    info = AddinBaseInfo.Parse(fileName);
+                    _addins.Add(info);
+                    AddinManager.Instance.Install(fileName);
+                }
+            }
         }
     }
 }

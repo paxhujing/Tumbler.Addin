@@ -26,5 +26,17 @@ namespace Tumbler.Addin.Core
         }
 
         #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// 获取一个标识，表示该节点是一个插件节点还是路径节点。
+        /// </summary>
+        public override Boolean IsVitual
+        {
+            get { return true; }
+        }
+
+        #endregion
     }
 }

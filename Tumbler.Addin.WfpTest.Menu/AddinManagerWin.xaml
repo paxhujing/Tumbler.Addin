@@ -38,5 +38,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <Button x:Name="Install" Content="Install" Click="Install_Click"/>
     </StackPanel>
 </Window>

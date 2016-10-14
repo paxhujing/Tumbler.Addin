@@ -43,7 +43,7 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Handle(Hashtable message)
         {
-            MessageBox.Show("Hadle request");
+            //MessageBox.Show("Hadle request");
         }
 
         public void Initialize()

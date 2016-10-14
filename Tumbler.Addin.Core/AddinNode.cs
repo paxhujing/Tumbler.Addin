@@ -37,6 +37,14 @@ namespace Tumbler.Addin.Core
         #region Properties
 
         /// <summary>
+        /// 获取一个标识，表示该节点是一个插件节点还是路径节点。
+        /// </summary>
+        public override Boolean IsVitual
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         /// 获取插件配置文件路径。
         /// </summary>
         public String AddinConfigFile { get; set; }

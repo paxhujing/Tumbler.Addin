@@ -66,6 +66,11 @@ namespace Tumbler.Addin.Core
         #region Properties
 
         /// <summary>
+        /// 获取一个标识，表示该节点是一个插件节点还是路径节点。
+        /// </summary>
+        public abstract Boolean IsVitual { get; }
+
+        /// <summary>
         /// 获取节点的上级路径。
         /// </summary>
         public String Path { get; }
