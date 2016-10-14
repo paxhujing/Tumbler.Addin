@@ -59,7 +59,7 @@
     <None Include="Addins.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tumber.Addin.Common\Tumbler.Addin.Common.csproj">
+    <ProjectReference Include="..\Tumbler.Addin.Common\Tumbler.Addin.Common.csproj">
       <Project>{97cfd8ea-0225-4c74-a94a-dccd8e8f37c6}</Project>
       <Name>Tumbler.Addin.Common</Name>
     </ProjectReference>
