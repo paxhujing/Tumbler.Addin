@@ -19,7 +19,7 @@ namespace Tumbler.Addin.Core
         /// <param name="path">挂载点。</param>
         /// <param name="id">插件Id。</param>
         /// <param name="owner">拥有此插件树节点的管理器。</param>
-        public VirtualNode(String path, String id, AddinManager owner)
+        internal VirtualNode(String path, String id, AddinManager owner)
             : base(path, id, owner)
         {
 

@@ -61,35 +61,6 @@ namespace Tumbler.Addin.Core
         #region Public
 
         /// <summary>
-        /// 获取插件基本信息。
-        /// </summary>
-        /// <param name="addinConfigFile">插件配置文件。</param>
-        public static AddinBaseInfo GetAddinBaseInfo(String addinConfigFile)
-        {
-            if (String.IsNullOrWhiteSpace(addinConfigFile))
-            {
-                throw new ArgumentNullException("addinConfigFile");
-            }
-            if (!addinConfigFile.EndsWith(".addin"))
-            {
-                throw new FileLoadException("Invalid addin config file");
-            }
-            AddinBaseInfo info = new AddinBaseInfo();
-            XElement xml = XElement.Load(addinConfigFile);
-            XElement infoNode = xml.Element("Info");
-            if (infoNode != null)
-            {
-                info.Name = infoNode.Attribute("Name")?.Value;
-                info.Author = infoNode.Attribute("Author")?.Value;
-                info.Copyright = infoNode.Attribute("Copyright")?.Value;
-                info.Url = infoNode.Attribute("Url")?.Value;
-                info.Description = infoNode.Attribute("Description")?.Value;
-                info.Version = infoNode.Attribute("Version")?.Value;
-            }
-            return info;
-        }
-
-        /// <summary>
         /// 初始化插件管理器。
         /// </summary>
         public void Initialize(String configFile)
@@ -111,10 +82,10 @@ namespace Tumbler.Addin.Core
         /// 获取已安装的插件信息。
         /// </summary>
         /// <returns>已安装插件的信息列表。</returns>
-        public IEnumerable<AddinTreeNode> GetInstallAddinInfos()
+        public IEnumerable<AddinBaseInfo> GetInstallAddinInfos()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return _nodes.Values.Where(x => x is AddinNode);
+            return _nodes.Values.Skip(3).Cast<AddinNode>().Select(x=>x.Info);
         }
 
         /// <summary>
@@ -183,14 +154,20 @@ namespace Tumbler.Addin.Core
         public void Uninstall(AddinNode addinNode)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            String configFile = addinNode.ConfigFile;
-            XElement xml = XElement.Load(ConfigFile);
-            XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == configFile);
-            if(removeItem != null)
-            {
-                removeItem.Remove();
-            }
-            xml.Save(ConfigFile);
+            String addinConfigFile = addinNode.AddinConfigFile;
+            UninstalImpl(addinConfigFile);
+        }
+
+        /// <summary>
+        /// 卸载插件。
+        /// </summary>
+        /// <param name="info">插件基本信息。</param>
+        public void Uninstall(AddinBaseInfo info)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            String addinConfigFile = info.AddinConfigFile;
+            if (String.IsNullOrWhiteSpace(addinConfigFile)) return;
+            UninstalImpl(addinConfigFile);
         }
 
         /// <summary>
@@ -276,6 +253,21 @@ namespace Tumbler.Addin.Core
         #endregion
 
         #region Private
+
+        /// <summary>
+        /// 卸载插件核心方法。
+        /// </summary>
+        /// <param name="addinConfigFile">插件配置文件。</param>
+        private void UninstalImpl(String addinConfigFile)
+        {
+            XElement xml = XElement.Load(ConfigFile);
+            XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == addinConfigFile);
+            if (removeItem != null)
+            {
+                removeItem.Remove();
+            }
+            xml.Save(ConfigFile);
+        }
 
         /// <summary>
         /// 创建插件树节点列表。

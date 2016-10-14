@@ -19,14 +19,14 @@
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="80"/>
                         </Grid.ColumnDefinitions>
-                        <StackPanel DataContext="{Binding Info.Value}" Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Background="Silver">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Background="Silver">
                             <TextBlock Text="{Binding Name}" FontSize="30"/>
                             <StackPanel Margin="3,0">
                                 <TextBlock Text="{Binding Version}" FontSize="14"/>
                                 <TextBlock Text="{Binding Description}" FontSize="14"/>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel DataContext="{Binding Info.Value}" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <TextBlock Text="{Binding Author}"/>
                             <TextBlock Margin="3,0" Text="{Binding Copyright}"/>
                             <TextBlock Margin="3,0" Text="{Binding Url}"/>

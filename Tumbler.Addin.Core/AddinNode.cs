@@ -20,20 +20,16 @@ namespace Tumbler.Addin.Core
         /// <param name="path">挂载点。</param>
         /// <param name="id">插件Id。</param>
         /// <param name="owner">拥有此插件树节点的管理器。</param>
-        /// <param name="configFile">插件配置文件。</param>
-        public AddinNode(String path, String id, AddinManager owner, String configFile)
+        /// <param name="addinConfigFile">插件配置文件。</param>
+        public AddinNode(String path, String id, AddinManager owner, String addinConfigFile)
             : base(path, id, owner)
         {
-            if (String.IsNullOrWhiteSpace(configFile))
+            if (String.IsNullOrWhiteSpace(addinConfigFile))
             {
                 throw new ArgumentNullException("configFile");
             }
-            ConfigFile = configFile;
-            Descriptor = new Lazy<AddinDescriptor>(() => AddinDescriptor.Parse(ConfigFile, this));
-            Info = new Lazy<AddinBaseInfo>(()=>
-            {
-                return AddinManager.GetAddinBaseInfo(ConfigFile);
-            });
+            AddinConfigFile = addinConfigFile;
+            Descriptor = new Lazy<AddinDescriptor>(() => AddinDescriptor.Parse(AddinConfigFile, this));
         }
 
         #endregion
@@ -43,17 +39,34 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取插件配置文件路径。
         /// </summary>
-        public String ConfigFile { get; set; }
+        public String AddinConfigFile { get; set; }
 
         /// <summary>
         /// 获取插件的描述。
         /// </summary>
-        internal Lazy<AddinDescriptor> Descriptor { get;}
+        internal Lazy<AddinDescriptor> Descriptor { get; }
 
+        #region Info
+
+        private WeakReference<AddinBaseInfo> _info = new WeakReference<AddinBaseInfo>(null);
         /// <summary>
         /// 插件基本信息。
         /// </summary>
-        public Lazy<AddinBaseInfo> Info { get; }
+        public AddinBaseInfo Info
+        {
+            get
+            {
+                AddinBaseInfo target = null;
+                if (!_info.TryGetTarget(out target))
+                {
+                    target = AddinBaseInfo.Parse(AddinConfigFile);
+                    _info.SetTarget(target);
+                }
+                return target;
+            }
+        }
+
+        #endregion
 
         #endregion
 

@@ -22,13 +22,13 @@ namespace Tumbler.Addin.WfpTest.Menu
     /// </summary>
     public partial class AddinManagerWin : Window
     {
-        private ObservableCollection<AddinTreeNode> _addins;
+        private ObservableCollection<AddinBaseInfo> _addins;
 
         public AddinManagerWin()
         {
             InitializeComponent();
-            IEnumerable<AddinTreeNode> installedAddins = AddinManager.Instance.GetInstallAddinInfos();
-            _addins = new ObservableCollection<AddinTreeNode>(installedAddins);
+            IEnumerable<AddinBaseInfo> installedAddins = AddinManager.Instance.GetInstallAddinInfos();
+            _addins = new ObservableCollection<AddinBaseInfo>(installedAddins);
             InstallAddins.ItemsSource = _addins;
         }
 
@@ -36,9 +36,8 @@ namespace Tumbler.Addin.WfpTest.Menu
         {
             e.Handled = true;
             Button btn = (Button)sender;
-            AddinNode node = btn.DataContext as AddinNode;
-            if (node == null) return;
-            AddinManager.Instance.Uninstall(node);
+            AddinBaseInfo info = (AddinBaseInfo)btn.DataContext;
+            AddinManager.Instance.Uninstall(info);
         }
     }
 }
