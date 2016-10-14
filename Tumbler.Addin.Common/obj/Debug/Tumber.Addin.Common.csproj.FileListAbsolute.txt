@@ -1,0 +1,6 @@
+E:\Tumbler.Addin\Tumber.Addin.Common\bin\Debug\Tumber.Addin.Common.dll
+E:\Tumbler.Addin\Tumber.Addin.Common\bin\Debug\Tumber.Addin.Common.pdb
+E:\Tumbler.Addin\Tumber.Addin.Common\obj\Debug\Tumber.Addin.Common.dll
+E:\Tumbler.Addin\Tumber.Addin.Common\obj\Debug\Tumber.Addin.Common.pdb
+E:\Tumbler.Addin\Tumber.Addin.Common\obj\Debug\Tumber.Addin.Common.csprojResolveAssemblyReference.cache
+E:\Tumbler.Addin\Tumber.Addin.Common\bin\Debug\Tumber.Addin.Common.XML
