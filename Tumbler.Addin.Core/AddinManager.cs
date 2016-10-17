@@ -64,11 +64,12 @@ namespace Tumbler.Addin.Core
         /// 初始化插件管理器。
         /// </summary>
         /// <param name="configFile">配置文件。</param>
-        public void Initialize(String configFile)
+        /// <param name="initPoints">初始化挂载点。</param>
+        public void Initialize(String configFile, Tuple<String, String, String[]>[] initPoints = null)
         {
             if (_isInit) return;
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
-            if(!Path.IsPathRooted(configFile))
+            if (!Path.IsPathRooted(configFile))
             {
                 configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFile);
             }
@@ -78,7 +79,7 @@ namespace Tumbler.Addin.Core
             _nodes.Add(_root.FullPath, _root);
             _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][0].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][0]);
             _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][1].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][1]);
-            CreateAddinTreeNodes();
+            CreateAddinTreeNodes(initPoints);
             GenerateAddinTree();
             _isInit = true;
         }
@@ -100,7 +101,9 @@ namespace Tumbler.Addin.Core
         public IAddin[] BuildFirstLevelAddins()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return BuildlAddins(_root.Children[AddinTreeNode.DefaultExposePoint][0].Children);
+            IList<IAddin> addins = new List<IAddin>();
+            BuildImpl(_root.Children[AddinTreeNode.DefaultExposePoint][0].Children, ref addins);
+            return addins.ToArray(); ;
         }
 
         /// <summary>
@@ -113,7 +116,9 @@ namespace Tumbler.Addin.Core
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
-            return BuildlAddins(descriptor.Owner.Children);
+            IList<IAddin> addins = new List<IAddin>();
+            BuildImpl(descriptor.Owner.Children, ref addins);
+            return addins.ToArray();
         }
 
         /// <summary>
@@ -123,7 +128,9 @@ namespace Tumbler.Addin.Core
         public IService[] BuildFirstLevelServices()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return (IService[])BuildlAddins(_root.Children["Default"][1].Children);
+            IList<IAddin> addins = new List<IAddin>();
+            BuildImpl(_root.Children[AddinTreeNode.DefaultExposePoint][1].Children, ref addins);
+            return addins.Cast<IService>().ToArray();
         }
 
         /// <summary>
@@ -306,11 +313,20 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 创建插件树节点列表。
         /// </summary>
-        private void CreateAddinTreeNodes()
+        /// <param name="initPoints">初始化挂载点。</param>
+        private void CreateAddinTreeNodes(Tuple<String, String, String[]>[] initPoints)
         {
             XElement xml = XElement.Load(ConfigFile);
             if (xml == null) throw new FileLoadException("Invalid addin manager config file");
             AddinTreeNode node = null;
+            if (initPoints != null && initPoints.Length != 0)
+            {
+                foreach(Tuple<String, String, String[]> point in initPoints)
+                {
+                    node = new VirtualNode(point.Item1, AddinTreeNode.DefaultExposePoint, point.Item2, point.Item3);
+                    _nodes.Add(node.FullPath, node);
+                }
+            }
             foreach (XElement element in xml.Elements("Addin"))
             {
                 node = GetAddinTreeNode(element);
@@ -371,9 +387,8 @@ namespace Tumbler.Addin.Core
         /// 构建插件列表。
         /// </summary>
         /// <returns>插件列表。</returns>
-        private IAddin[] BuildlAddins(ReadOnlyDictionary<String,Collection<AddinTreeNode>> nodes)
+        private IAddin[] BuildAddins(ReadOnlyDictionary<String,Collection<AddinTreeNode>> nodes)
         {
-            AddinNode addinNode = null;
             Collection<AddinTreeNode> temp = null;
             Collection<IAddin> addins = new Collection<IAddin>();
             foreach(String point in nodes.Keys)
@@ -381,14 +396,31 @@ namespace Tumbler.Addin.Core
                 temp = nodes[point];
                 foreach (AddinTreeNode node in temp)
                 {
-                    addinNode = node as AddinNode;
-                    if (addinNode != null)
-                    {
-                        addins.Add(addinNode.Buid());
-                    }
+                    if (node.IsVirtual) continue;
+                    addins.Add(((AddinNode)node).Buid());
                 }
             }
             return addins.ToArray();
+        }
+
+        private void BuildImpl(ReadOnlyDictionary<String, Collection<AddinTreeNode>> nodes,ref IList<IAddin> addins)
+        {
+            Collection<AddinTreeNode> temp = null;
+            foreach (String point in nodes.Keys)
+            {
+                temp = nodes[point];
+                foreach (AddinTreeNode node in temp)
+                {
+                    if (node.IsVirtual)
+                    {
+                        BuildImpl(node.Children, ref addins);
+                    }
+                    else
+                    {
+                        addins.Add(((AddinNode)node).Buid());
+                    }
+                }
+            }
         }
 
         #endregion
