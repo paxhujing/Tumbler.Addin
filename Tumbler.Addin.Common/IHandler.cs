@@ -16,6 +16,6 @@ namespace Tumbler.Addin.Common
         /// 处理来自其它插件的消息。
         /// </summary>
         /// <param name="message">消息。</param>
-        void Handle(Hashtable message);
+        void Handle(Object message);
     }
 }

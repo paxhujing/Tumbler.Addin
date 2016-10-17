@@ -110,7 +110,7 @@
             表示可以处理来自其它插件的消息。
             </summary>
         </member>
-        <member name="M:Tumbler.Addin.Common.IHandler.Handle(System.Collections.Hashtable)">
+        <member name="M:Tumbler.Addin.Common.IHandler.Handle(System.Object)">
             <summary>
             处理来自其它插件的消息。
             </summary>

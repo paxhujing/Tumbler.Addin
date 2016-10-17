@@ -51,7 +51,7 @@ namespace Tumbler.Addin.WfpTest.Menu
             }
         }
 
-        public void Handle(Hashtable message)
+        public void Handle(Object message)
         {
             //MessageBox.Show("Hadle request");
         }
