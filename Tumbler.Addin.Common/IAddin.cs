@@ -39,7 +39,7 @@ namespace Tumbler.Addin.Common
         /// </summary>
         /// <param name="fullPath">依赖的插件的完整路径。</param>
         /// <param name="state">改变后的状态。</param>
-        void OnDependencyStateChanged(String fullPath, AddinState? state);
+        void OnDependencyStateChanged(String fullPath, AddinState state);
 
         #endregion
     }

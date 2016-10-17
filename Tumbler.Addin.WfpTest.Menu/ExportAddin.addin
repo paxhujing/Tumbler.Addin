@@ -10,7 +10,7 @@
     
     <!--引用的程序集-->
     <Assemblies>
-      <Reference Path="E:/Tumbler.Addin/Tumbler.Addin.WfpTest.Menu/bin/Debug/Tumbler.Addin.WfpTest.Menu.dll"/>
+      <Reference Path="Tumbler.Addin.WfpTest.Menu.dll"/>
     </Assemblies>
 
   </Runtimes>

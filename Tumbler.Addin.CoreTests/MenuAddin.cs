@@ -29,7 +29,7 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("Initialize MenuAddin");
         }
 
-        public void OnDependencyStateChanged(String fullPath, AddinState? state)
+        public void OnDependencyStateChanged(String fullPath, AddinState state)
         {
             WriteLine($"MenuAddin Depend on {fullPath}--[{state}]");
         }

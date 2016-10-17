@@ -56,6 +56,11 @@
             表示插件当前的状态。
             </summary>
         </member>
+        <member name="F:Tumbler.Addin.Common.AddinState.Unknow">
+            <summary>
+            未知状态。
+            </summary>
+        </member>
         <member name="F:Tumbler.Addin.Common.AddinState.Enable">
             <summary>
             启用。
@@ -98,7 +103,7 @@
             执行插件提供的功能。
             </summary>
         </member>
-        <member name="M:Tumbler.Addin.Common.IAddin.OnDependencyStateChanged(System.String,System.Nullable{Tumbler.Addin.Common.AddinState})">
+        <member name="M:Tumbler.Addin.Common.IAddin.OnDependencyStateChanged(System.String,Tumbler.Addin.Common.AddinState)">
             <summary>
             依赖的插件状态改变时执行。
             </summary>

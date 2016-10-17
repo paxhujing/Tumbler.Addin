@@ -41,7 +41,7 @@ namespace Tumbler.Addin.WfpTest.Menu
             MountPoint = mountPoint;
         }
 
-        public void OnDependencyStateChanged(string fullPath, AddinState? state)
+        public void OnDependencyStateChanged(string fullPath, AddinState state)
         {
         }
     }

@@ -62,31 +62,25 @@ namespace Tumbler.Addin.WfpTest.Menu
             ToolTip = "This is a menu";
         }
 
-        public void OnDependencyStateChanged(String fullPath, AddinState? state)
+        public void OnDependencyStateChanged(String fullPath, AddinState state)
         {
-            if (state.HasValue)
+            switch (state)
             {
-                switch (state.Value)
-                {
-                    case AddinState.Disable:
-                        IsEnabled = false;
-                        break;
-                    case AddinState.Enable:
-                        IsEnabled = true;
-                        break;
-                    case AddinState.Exclude:
-                        Visibility = Visibility.Collapsed;
-                        break;
-                    case AddinState.Include:
-                        Visibility = Visibility.Visible;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                IsEnabled = false;
+                case AddinState.Disable:
+                    IsEnabled = false;
+                    break;
+                case AddinState.Enable:
+                    IsEnabled = true;
+                    break;
+                case AddinState.Exclude:
+                    Visibility = Visibility.Collapsed;
+                    break;
+                case AddinState.Include:
+                    Visibility = Visibility.Visible;
+                    break;
+                default:
+                    IsEnabled = false;
+                    break;
             }
         }
 

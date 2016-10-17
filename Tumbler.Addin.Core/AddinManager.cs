@@ -206,30 +206,30 @@ namespace Tumbler.Addin.Core
         /// 获取指定路径的插件状态。
         /// </summary>
         /// <param name="fullPath">插件所在完整路径。</param>
-        /// <returns>插件状态。如果为null表示当前无法获取到插件的状态，可能是当前节点不是插件节点AddinNode，或者插件还未构建。</returns>
-        public AddinState? GetAddinState(String fullPath)
+        /// <returns>插件状态。</returns>
+        public AddinState GetAddinState(String fullPath)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinTreeNode node = GetNode(fullPath);
-            if (node == null) throw new InvalidOperationException("Unknow path");
-            AddinNode addinNode = node as AddinNode;
-            if(addinNode != null && addinNode.Descriptor.IsValueCreated)
+            if (node == null || node.IsVirtual) return AddinState.Unknow;
+            AddinNode addinNode = (AddinNode)node;
+            if(addinNode.Descriptor.IsValueCreated)
             {
                 return addinNode.Descriptor.Value.AddinState;
             }
-            return null;
+            return AddinState.Unknow;
         }
 
         /// <summary>
         /// 获取插件的状态。
         /// </summary>
         /// <param name="addin">插件。</param>
-        /// <returns>插件状态。如果为null表示插件管理器无法跟踪该插件。</returns>
-        public AddinState? GetAddinState(IAddin addin)
+        /// <returns>插件状态。</returns>
+        public AddinState GetAddinState(IAddin addin)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) return null;
+            if (descriptor == null) return AddinState.Unknow;
             return descriptor.AddinState;
         }
 

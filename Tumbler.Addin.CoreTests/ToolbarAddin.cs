@@ -24,7 +24,7 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("Execute ToolbarAddin");
         }
 
-        public void Handle(Hashtable message)
+        public void Handle(Object message)
         {
             WriteLine("ToolbarAddin Handle message");
         }
@@ -35,7 +35,7 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("Initialize ToolbarAddin");
         }
 
-        public void OnDependencyStateChanged(String fullPath, AddinState? state)
+        public void OnDependencyStateChanged(String fullPath, AddinState state)
         {
             WriteLine($"ToolbarAddin Depden on {fullPath}--[{state}]");
         }

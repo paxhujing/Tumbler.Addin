@@ -341,7 +341,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void InitializeAddinState()
         {
-            AddinState? state = null;
+            AddinState state = AddinState.Unknow;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
                 state = AddinManager.Instance.GetAddinState(Dependencies[i]);

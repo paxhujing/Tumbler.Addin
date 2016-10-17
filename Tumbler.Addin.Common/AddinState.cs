@@ -12,6 +12,10 @@ namespace Tumbler.Addin.Common
     public enum AddinState
     {
         /// <summary>
+        /// 未知状态。
+        /// </summary>
+        Unknow,
+        /// <summary>
         /// 启用。
         /// </summary>
         Enable,

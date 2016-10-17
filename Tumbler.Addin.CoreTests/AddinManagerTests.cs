@@ -73,7 +73,7 @@ namespace Tumbler.Addin.Core.Tests
         public void GetAddinStateTest()
         {
             IAddin[] addins = _manager.BuildFirstLevelAddins();
-            AddinState? state = null;
+            AddinState state;
             foreach (IAddin addin in addins)
             {
                 state = _manager.GetAddinState(addin);
@@ -85,7 +85,7 @@ namespace Tumbler.Addin.Core.Tests
         public void GetAddinStateTest1()
         {
             //_manager.BuildFirstLevelAddins();
-            AddinState? state = null;
+            AddinState state;
             foreach (String fullPath in new String[] { "/Addins/Menu", "/Addins/Toolbar" })
             {
                 state = _manager.GetAddinState(fullPath);
