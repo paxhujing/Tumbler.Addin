@@ -285,7 +285,16 @@ namespace Tumbler.Addin.Core
         private void UninstalImpl(String addinConfigFile)
         {
             XElement xml = XElement.Load(ConfigFile);
-            XElement removeItem = xml.Elements("Addin").SingleOrDefault(x => x.Attribute("ref")?.Value == addinConfigFile);
+            XElement removeItem = xml.Elements("Addin").SingleOrDefault(x =>
+            {
+                String file = x.Attribute("ref")?.Value;
+                if (String.IsNullOrWhiteSpace(file)) return false;
+                if (!Path.IsPathRooted(file))
+                {
+                    file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+                }
+                return file == addinConfigFile;
+            });
             if (removeItem != null)
             {
                 removeItem.Remove();
