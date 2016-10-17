@@ -63,6 +63,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化插件管理器。
         /// </summary>
+        /// <param name="configFile">配置文件。</param>
         public void Initialize(String configFile)
         {
             if (_isInit) return;
