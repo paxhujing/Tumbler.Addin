@@ -290,20 +290,26 @@ namespace Tumbler.Addin.Core
             String fullName = null;
             Collection<String> unresoles = new Collection<String>();
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            String file = null;
             foreach (String reference in References)
             {
                 try
                 {
-                    aname = AssemblyName.GetAssemblyName(reference);
+                    file = reference;
+                    if (!Path.IsPathRooted(reference))
+                    {
+                        file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, reference);
+                    }
+                    aname = AssemblyName.GetAssemblyName(file);
                     fullName = aname.FullName;
                     if (!assemblies.Any(x => x.FullName == fullName))
                     {
-                        Assembly.LoadFrom(reference);
+                        Assembly.LoadFrom(file);
                     }
                 }
                 catch (Exception)
                 {
-                    unresoles.Add(reference);
+                    unresoles.Add(file);
                 }
             }
             if (unresoles.Count != 0)
