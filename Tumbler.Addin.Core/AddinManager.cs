@@ -54,6 +54,11 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public Int32 Count { get; private set; }
 
+        /// <summary>
+        /// 获取或设置过滤器。过滤器用于根据指定条件筛选符合要求的插件。
+        /// </summary>
+        public Func<XElement,Boolean> Filter { get; set; }
+
         #endregion
 
         #region Methods
@@ -331,8 +336,10 @@ namespace Tumbler.Addin.Core
                     _nodes.Add(node.FullPath, node);
                 }
             }
+            Func<XElement, Boolean> filter = Filter;
             foreach (XElement element in xml.Elements("Addin"))
             {
+                if (!filter(element)) continue;
                 node = GetAddinTreeNode(element);
                 if (node != null && !_nodes.ContainsKey(node.FullPath))
                 {
