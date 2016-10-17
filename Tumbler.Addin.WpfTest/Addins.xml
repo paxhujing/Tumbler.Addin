@@ -2,4 +2,5 @@
 <Addins>
   <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\bin\Debug\Menu.addin" />
   <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\bin\Debug\ExportAddin.addin" />
+  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\bin\Debug\AddinManagerMenu.addin" />
 </Addins>
