@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Addins>
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\bin\Debug\Menu.addin" />
+  <Addin ref="E:\Projects\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\Menu.addin" />
   <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.WfpTest.Menu\bin\Debug\AddinManagerMenu.addin" />
   <Addin ref="ExportAddin.addin" />
 </Addins>

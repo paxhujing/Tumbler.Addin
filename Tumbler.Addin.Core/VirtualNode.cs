@@ -20,10 +20,9 @@ namespace Tumbler.Addin.Core
         /// <param name="mountPoint">要挂载到的节点中的挂载点。</param>
         /// <param name="id">插件Id。</param>
         /// <param name="exposes">向外提供的挂载点。</param>
-        internal VirtualNode(String mountTo, String mountPoint, String id, String[] exposes)
-            : base(mountTo, mountPoint, id, exposes)
+        internal VirtualNode(String mountTo, String mountPoint, String id, String[] exposes = null)
+            : base(mountTo, mountPoint, id, (exposes == null || exposes.Length == 0) ? new String[] { DefaultExposePoint } : exposes)
         {
-
         }
 
         #endregion

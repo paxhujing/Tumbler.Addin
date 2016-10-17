@@ -42,7 +42,10 @@ namespace Tumbler.Addin.Core
             Owner = owner;
             Type = type;
             References = references;
-            Dependencies = depedencies.Select(x => AddinTreeNode.CompletePath(x)).ToArray();
+            if (depedencies != null)
+            {
+                Dependencies = depedencies.Select(x => AddinTreeNode.CompletePath(x)).ToArray();
+            }
         }
 
         #endregion
@@ -138,9 +141,17 @@ namespace Tumbler.Addin.Core
             XElement xml = XElement.Load(configFile)?.Element("Runtimes");
             if (xml == null) throw new FileLoadException("Invalid addin config file");
             IEnumerable<XAttribute> referencesAttr = xml.Element("Assemblies")?.Elements("Reference")?.Attributes("Path");
-            String[] references = referencesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
+            String[] references = null;
+            if (referencesAttr != null && referencesAttr.Count() != 0)
+            {
+                references = referencesAttr.Select(x => x.Value).ToArray();
+            }
             IEnumerable<XAttribute> dependenciesAttr = xml.Element("Dependencies")?.Elements("Dependency")?.Attributes("Path");
-            String[] dependencies = dependenciesAttr?.Select(x => x.Value).ToArray() ?? new String[0];
+            String[] dependencies = null;
+            if (dependenciesAttr != null && dependenciesAttr.Count() != 0)
+            {
+                dependencies = dependenciesAttr.Select(x => x.Value).ToArray();
+            }
             return new AddinDescriptor(xml.Attribute("Type")?.Value, owner, references, dependencies);
         }
 
@@ -219,7 +230,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void AnalysisDependencies()
         {
-            if (Dependencies.Length == 0) return;
+            if (Dependencies == null) return;
             Collection<String> unresoles = new Collection<String>();
             AddinTreeNode node = null;
             String dependency = null;
@@ -244,7 +255,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void AnalysisAssemblies()
         {
-            if (References.Length == 0) return;
+            if (References == null) return;
             LoadAssemblies();
             Type type = System.Type.GetType(Type, 
                 (n)=>
@@ -320,6 +331,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void BuildDependencies()
         {
+            if (Dependencies == null) return;
             String dependency = null;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
@@ -337,6 +349,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void InitializeAddinState()
         {
+            if (Dependencies == null) return;
             AddinState state = AddinState.Unknow;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
@@ -350,6 +363,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void RemoveDependencies()
         {
+            if (Dependencies == null) return;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
                 AddinDescriptor.DepdencieTable.Remove(Dependencies[i]);

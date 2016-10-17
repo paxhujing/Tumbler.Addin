@@ -79,8 +79,8 @@ namespace Tumbler.Addin.Core
             ConfigFile = configFile;
             _root = new RootNode();
             _nodes.Add(_root.FullPath, _root);
-            _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][0].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][0]);
-            _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][1].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][1]);
+            _nodes.Add(_root.GetChilds()[0].FullPath, _root.GetChilds()[0]);
+            _nodes.Add(_root.GetChilds()[1].FullPath, _root.GetChilds()[1]);
             CreateAddinTreeNodes(initPoints);
             GenerateAddinTree();
             _isInit = true;
@@ -104,7 +104,7 @@ namespace Tumbler.Addin.Core
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             IList<IAddin> addins = new List<IAddin>();
-            BuildImpl(_root.Children[AddinTreeNode.DefaultExposePoint][0].Children, ref addins);
+            BuildImpl(_root.GetChilds()[0], ref addins);
             return addins.ToArray(); ;
         }
 
@@ -116,7 +116,7 @@ namespace Tumbler.Addin.Core
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             IList<IAddin> addins = new List<IAddin>();
-            BuildImpl(_root.Children[AddinTreeNode.DefaultExposePoint][1].Children, ref addins);
+            BuildImpl(_root.GetChilds()[1], ref addins);
             return addins.Cast<IService>().ToArray();
         }
 
@@ -256,7 +256,7 @@ namespace Tumbler.Addin.Core
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             IList<IAddin> addins = new List<IAddin>();
-            BuildImpl(descriptor.Owner.Children, ref addins);
+            BuildImpl(descriptor.Owner, ref addins);
             return addins.ToArray();
         }
 
@@ -387,8 +387,7 @@ namespace Tumbler.Addin.Core
             XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             String mountTo = xml.Attribute("MountTo")?.Value;
-            String point = xml.Attribute("MountPoint")?.Value;
-            String mountPoint = String.IsNullOrWhiteSpace(point) ? AddinTreeNode.DefaultExposePoint : point;
+            String mountPoint = xml.Attribute("MountPoint")?.Value;
             String id = xml.Attribute("Id").Value;
             String[] exposes = xml.Elements("Expose")?.Attributes("Point")?.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Select(x => x.Value).ToArray();
             return new AddinNode(mountTo, mountPoint, id, exposes, file);
@@ -403,11 +402,8 @@ namespace Tumbler.Addin.Core
             {
                 if (_nodes.ContainsKey(node.MountTo))
                 {
-                    if (_nodes[node.MountTo].InnerChildren.ContainsKey(node.MountPoint))
-                    {
-                        _nodes[node.MountTo].InnerChildren[node.MountPoint].Add(node);
-                        continue;
-                    }
+                    _nodes[node.MountTo].SetChild(node, node.MountPoint);
+                    continue;
                 }
                 _nodes.Remove(node.FullPath);
             }
@@ -434,21 +430,28 @@ namespace Tumbler.Addin.Core
             return addins.ToArray();
         }
 
-        private void BuildImpl(ReadOnlyDictionary<String, Collection<AddinTreeNode>> nodes,ref IList<IAddin> addins)
+        /// <summary>
+        /// 构建节点的插件实例。
+        /// </summary>
+        /// <param name="node">节点。</param>
+        /// <param name="addins">构建完成的插件。</param>
+        private void BuildImpl(AddinTreeNode node,ref IList<IAddin> addins)
         {
-            Collection<AddinTreeNode> temp = null;
-            foreach (String point in nodes.Keys)
+            ReadOnlyCollection<AddinTreeNode> items = null;
+            if (node.Exposes == null) return;
+            foreach (String expose in node.Exposes)
             {
-                temp = nodes[point];
-                foreach (AddinTreeNode node in temp)
+                items = node.GetChilds(expose);
+                if (items == null) continue;
+                foreach (AddinTreeNode item in items)
                 {
-                    if (node.IsVirtual)
+                    if (item.IsVirtual)
                     {
-                        BuildImpl(node.Children, ref addins);
+                        BuildImpl(item, ref addins);
                     }
                     else
                     {
-                        addins.Add(((AddinNode)node).Buid());
+                        addins.Add(((AddinNode)item).Buid());
                     }
                 }
             }

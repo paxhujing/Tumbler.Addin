@@ -36,7 +36,7 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Execute()
         {
-            IAddin[] addins = AddinManager.Instance.BuildChildAddins(this);
+            IAddin[] addins = this.BuildChildAddins();
             foreach (IAddin addin in addins)
             {
                 switch(addin.MountPoint)

@@ -19,12 +19,16 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public const String WorkspaceId = ".";
 
+        private static readonly Dictionary<String, Tuple<ReadOnlyCollection<AddinTreeNode>,Collection<AddinTreeNode>>> GlobalChilds = new Dictionary<String, Tuple<ReadOnlyCollection<AddinTreeNode>, Collection<AddinTreeNode>>>();
+
         /// <summary>
         /// 所有节点都具有的默认挂载点。
         /// </summary>
         public const String DefaultExposePoint = "Default";
 
         private readonly Int32 _hash;
+
+
 
         #endregion
 
@@ -53,15 +57,6 @@ namespace Tumbler.Addin.Core
             FullPath = GetFullPath();
             _hash = FullPath.GetHashCode();
             Exposes = exposes;
-            if (exposes != null && exposes.Length != 0)
-            {
-                foreach (String expose in exposes)
-                {
-                    InnerChildren.Add(expose, new Collection<AddinTreeNode>());
-                }
-            }
-            InnerChildren.Add(DefaultExposePoint, new Collection<AddinTreeNode>());
-            Children = new ReadOnlyDictionary<String, Collection<AddinTreeNode>>(InnerChildren);
         }
 
         #endregion
@@ -97,16 +92,6 @@ namespace Tumbler.Addin.Core
         /// 获取完整路径。
         /// </summary>
         public String FullPath { get; }
-
-        /// <summary>
-        /// 获取当前节点的子节点。
-        /// </summary>
-        public ReadOnlyDictionary<String, Collection<AddinTreeNode>> Children { get; }
-
-        /// <summary>
-        /// 内部获取当前节点的子节点。
-        /// </summary>
-        internal Dictionary<String, Collection<AddinTreeNode>> InnerChildren { get; } = new Dictionary<String, Collection<AddinTreeNode>>();
 
         #endregion
 
@@ -162,7 +147,105 @@ namespace Tumbler.Addin.Core
 
         #endregion
 
+        #region Internal
+
+        /// <summary>
+        /// 获取指定挂载点下的子节点。
+        /// </summary>
+        /// <param name="expose">挂载点。</param>
+        /// <returns>子节点。</returns>
+        internal ReadOnlyCollection<AddinTreeNode> GetChilds(String expose = null)
+        {
+            String[] items = Exposes;
+            if (items == null) return null;
+            if (String.IsNullOrWhiteSpace(expose))
+            {
+                if (IsVirtual)
+                {
+                    expose = DefaultExposePoint;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            for (Int32 i = 0; i < items.Length; i++)
+            {
+                if (items[i] == expose)
+                {
+                    String mount = $"{FullPath}/{expose}";
+                    return GetReadOnlyCollection(mount);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 将子节点添加到指定的挂载点下。
+        /// </summary>
+        /// <param name="expose">挂载点。</param>
+        /// <param name="child">子节点。</param>
+        internal void SetChild(AddinTreeNode child, String expose = null)
+        {
+            String[] items = Exposes;
+            if (items == null) return;
+            if (String.IsNullOrWhiteSpace(expose))
+            {
+                if (IsVirtual)
+                {
+                    expose = DefaultExposePoint;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            for (Int32 i = 0; i < items.Length; i++)
+            {
+                if (items[i] == expose)
+                {
+                    String mount = $"{FullPath}/{expose}";
+                    Collection<AddinTreeNode> c = GetOrAddCollection(mount);
+                    c.Add(child);
+                    break;
+                }
+            }
+        }
+
+        #endregion
+
         #region Private
+
+        /// <summary>
+        /// 获取或者添加一个子节点集合。
+        /// </summary>
+        /// <param name="mount">挂在路径和挂载点。</param>
+        /// <returns>子节点集合。</returns>
+        private Collection<AddinTreeNode> GetOrAddCollection(String mount)
+        {
+            if (GlobalChilds.ContainsKey(mount))
+            {
+                return GlobalChilds[mount].Item2;
+            }
+            Collection<AddinTreeNode> c = new Collection<AddinTreeNode>();
+            ReadOnlyCollection<AddinTreeNode> rc = new ReadOnlyCollection<AddinTreeNode>(c);
+            GlobalChilds.Add(mount, new Tuple<ReadOnlyCollection<AddinTreeNode>, Collection<AddinTreeNode>>(rc, c));
+            return c;
+        }
+
+        /// <summary>
+        /// 获取指定挂载点下子节点只读集合。
+        /// </summary>
+        /// <param name="mount">挂载点。</param>
+        /// <returns>子节点只读集合。</returns>
+        private ReadOnlyCollection<AddinTreeNode> GetReadOnlyCollection(String mount)
+        {
+            if (GlobalChilds.ContainsKey(mount))
+            {
+                return GlobalChilds[mount].Item1;
+            }
+            return null;
+        }
 
         /// <summary>
         /// 获取节点的完整路径。

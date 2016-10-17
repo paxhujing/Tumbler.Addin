@@ -11,16 +11,24 @@ namespace Tumbler.Addin.Core
     /// </summary>
     internal class RootNode : VirtualNode
     {
+        #region Fields
+
+        public const String AddinsExpose = "Addins";
+
+        public const String ServicesExpose = "Services";
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
         /// 初始化类型 Tumbler.Addin.Core.RootAddinTreeNode 实例。
         /// </summary>
         public RootNode()
-            : base(String.Empty, null, WorkspaceId, null)
+            : base(String.Empty, null, WorkspaceId)
         {
-            InnerChildren[DefaultExposePoint].Add(new VirtualNode(this.FullPath, DefaultExposePoint, "Addins", null));
-            InnerChildren[DefaultExposePoint].Add(new VirtualNode(this.FullPath, DefaultExposePoint, "Services", null));
+            SetChild(new VirtualNode(this.FullPath, DefaultExposePoint, AddinsExpose));
+            SetChild(new VirtualNode(this.FullPath, DefaultExposePoint, ServicesExpose));
         }
 
         #endregion
