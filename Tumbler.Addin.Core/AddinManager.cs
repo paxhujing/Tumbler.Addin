@@ -326,7 +326,7 @@ namespace Tumbler.Addin.Core
             {
                 file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
             }
-            if (File.Exists(file)) return null;
+            if (!File.Exists(file)) return null;
             XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             String mountTo = xml.Attribute("MountTo")?.Value;
