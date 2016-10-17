@@ -19,6 +19,11 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public const String WorkspaceId = ".";
 
+        /// <summary>
+        /// 所有节点都具有的默认挂载点。
+        /// </summary>
+        public const String DefaultExposePoint = "Default";
+
         private readonly Int32 _hash;
 
         #endregion
@@ -28,37 +33,35 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化类型 Tumbler.Addin.Core.AddinTreeNode 实例。
         /// </summary>
-        /// <param name="path">挂载点。</param>
+        /// <param name="mountTo">要挂载到的节点。</param>
+        /// <param name="mountPoint">要挂载到的节点中的挂载点。</param>
         /// <param name="id">插件Id。</param>
-        /// <param name="manager">拥有此插件树节点的管理器。</param>
-        protected AddinTreeNode(String path, String id, AddinManager manager)
+        /// <param name="exposes">向外提供的挂载点。</param>
+        protected AddinTreeNode(String mountTo, String mountPoint, String id, String[] exposes)
         {
-            if (path == null)
+            if (mountTo == null)
             {
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException("mountTo");
             }
             if (String.IsNullOrWhiteSpace(id))
             {
                 throw new ArgumentNullException("id");
             }
-            if (manager == null)
-            {
-                throw new ArgumentNullException("owner");
-            }
-            Manager = manager;
-            path = CompletePath(path);
-            if (!String.IsNullOrWhiteSpace(path))
-            {
-                FullPath = $"{path}/{id}";
-            }
-            else
-            {
-                FullPath = id;
-            }
-            _hash = FullPath.GetHashCode();
-            Path = path;
+            MountTo = CompletePath(mountTo);
+            MountPoint = mountPoint;
             Id = id;
-            Children = new ReadOnlyCollection<AddinTreeNode>(InnerChildren);
+            FullPath = GetFullPath();
+            _hash = FullPath.GetHashCode();
+            Exposes = exposes;
+            if (exposes != null && exposes.Length != 0)
+            {
+                foreach (String expose in exposes)
+                {
+                    InnerChildren.Add(expose, new Collection<AddinTreeNode>());
+                }
+            }
+            InnerChildren.Add(DefaultExposePoint, new Collection<AddinTreeNode>());
+            Children = new ReadOnlyDictionary<String, Collection<AddinTreeNode>>(InnerChildren);
         }
 
         #endregion
@@ -71,19 +74,24 @@ namespace Tumbler.Addin.Core
         public abstract Boolean IsVitual { get; }
 
         /// <summary>
-        /// 获取节点的上级路径。
+        /// 获取要挂载到的节点路径。
         /// </summary>
-        public String Path { get; }
-        
+        public String MountTo { get; }
+
+        /// <summary>
+        /// 获取要挂载到的节点中的挂载点。
+        /// </summary>
+        public String MountPoint { get; }
+
         /// <summary>
         /// 获取插件Id。
         /// </summary>
         public String Id { get; }
 
         /// <summary>
-        /// 拥有此插件树节点的管理器。
+        /// 获取向外提供的挂载点。
         /// </summary>
-        public AddinManager Manager { get; }
+        public String[] Exposes { get; }
 
         /// <summary>
         /// 获取完整路径。
@@ -93,12 +101,12 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取当前节点的子节点。
         /// </summary>
-        public ReadOnlyCollection<AddinTreeNode> Children { get; }
+        public ReadOnlyDictionary<String, Collection<AddinTreeNode>> Children { get; }
 
         /// <summary>
         /// 内部获取当前节点的子节点。
         /// </summary>
-        internal Collection<AddinTreeNode> InnerChildren { get; } = new Collection<AddinTreeNode>();
+        internal Dictionary<String, Collection<AddinTreeNode>> InnerChildren { get; } = new Dictionary<String, Collection<AddinTreeNode>>();
 
         #endregion
 
@@ -109,36 +117,38 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 补全路径。
         /// </summary>
-        /// <param name="path">路径。</param>
+        /// <param name="mountTo">要挂载到的节点。</param>
         /// <returns>包含工作空间的完成路径。</returns>
-        public static String CompletePath(String path)
+        public static String CompletePath(String mountTo)
         {
-            if (String.IsNullOrWhiteSpace(path))
+            String fullMountTo = null;
+            if (String.IsNullOrWhiteSpace(mountTo))
             {
-                return String.Empty;
+                fullMountTo = String.Empty;
             }
-            else if (path == AddinTreeNode.WorkspaceId)
+            else if (mountTo == AddinTreeNode.WorkspaceId)
             {
-                return AddinTreeNode.WorkspaceId;
+                fullMountTo = AddinTreeNode.WorkspaceId;
             }
             else
             {
-                if (path.StartsWith("./"))
+                if (mountTo.StartsWith("./"))
                 {
-                    return path;
+                    fullMountTo = mountTo;
                 }
                 else
                 {
-                    if (path.StartsWith("/"))
+                    if (mountTo.StartsWith("/"))
                     {
-                        return AddinTreeNode.WorkspaceId + path;
+                        fullMountTo = AddinTreeNode.WorkspaceId + mountTo;
                     }
                     else
                     {
-                        return $"{AddinTreeNode.WorkspaceId}/{path}";
+                        fullMountTo = $"{AddinTreeNode.WorkspaceId}/{mountTo}";
                     }
                 }
             }
+            return fullMountTo;
         }
 
         /// <summary>
@@ -148,6 +158,33 @@ namespace Tumbler.Addin.Core
         public override Int32 GetHashCode()
         {
             return _hash;
+        }
+
+        #endregion
+
+        #region Private
+
+        /// <summary>
+        /// 获取节点的完整路径。
+        /// </summary>
+        /// <returns>节点的完整路径。</returns>
+        private String GetFullPath()
+        {
+            String mountTo = MountTo;
+            String mountPoint = MountPoint;
+            String temp = mountTo;
+            if (!String.IsNullOrWhiteSpace(mountPoint) && DefaultExposePoint != mountPoint)
+            {
+                temp = $"{mountTo}/{mountPoint}";
+            }
+            if (mountTo != String.Empty)
+            {
+                return $"{temp}/{Id}";
+            }
+            else
+            {
+                return Id;
+            }
         }
 
         #endregion

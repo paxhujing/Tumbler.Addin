@@ -56,9 +56,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ExportAddin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MenuAddin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Compile Include="AddinManagerMenuAddin.xaml.cs">
       <DependentUpon>AddinManagerMenuAddin.xaml</DependentUpon>
@@ -66,9 +71,13 @@
     <Compile Include="AddinManagerWin.xaml.cs">
       <DependentUpon>AddinManagerWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExportAddin.xaml.cs">
+      <DependentUpon>ExportAddin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MenuAddin.xaml.cs">
       <DependentUpon>MenuAddin.xaml</DependentUpon>
       <SubType>Code</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +122,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AddinManagerMenu.addin">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ExportAddin.addin">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

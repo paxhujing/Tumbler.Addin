@@ -206,7 +206,7 @@ namespace Tumbler.Addin.Core
         private IAddin GetInstance()
         {
             IAddin addin = (IAddin)Activator.CreateInstance(_type);
-            addin.Initialize();
+            addin.Initialize(Owner.MountPoint, Owner.Exposes);
             AddinsDescriptor.Add(addin, this);
             Addin = addin;
             InitializeAddinState();
@@ -220,14 +220,13 @@ namespace Tumbler.Addin.Core
         private void AnalysisDependencies()
         {
             if (Dependencies.Length == 0) return;
-            AddinManager manager = Owner.Manager;
             Collection<String> unresoles = new Collection<String>();
             AddinTreeNode node = null;
             String dependency = null;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
                 dependency = Dependencies[i];
-                node = manager.GetNode(dependency);
+                node = AddinManager.Instance.GetNode(dependency);
                 if (node == null)
                 {
                     unresoles.Add(dependency);
@@ -336,11 +335,10 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void InitializeAddinState()
         {
-            AddinManager manager = Owner.Manager;
             AddinState? state = null;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
-                state = manager.GetAddinState(Dependencies[i]);
+                state = AddinManager.Instance.GetAddinState(Dependencies[i]);
                 Addin.OnDependencyStateChanged(Dependencies[i], state);
             }
         }

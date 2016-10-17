@@ -28,6 +28,8 @@ namespace Tumbler.Addin.WfpTest.Menu
             InitializeComponent();
         }
 
+        public string MountPoint { get; private set; }
+
         public void Dispose()
         {
         }
@@ -37,7 +39,15 @@ namespace Tumbler.Addin.WfpTest.Menu
             IAddin[] addins = AddinManager.Instance.BuildChildAddins(this);
             foreach (IAddin addin in addins)
             {
-                AddChild(addin);
+                switch(addin.MountPoint)
+                {
+                    case "File":
+                        FileMenu.Items.Add(addin);
+                        break;
+                    default:
+                        AddChild(addin);
+                        break;
+                }
             }
         }
 
@@ -46,8 +56,9 @@ namespace Tumbler.Addin.WfpTest.Menu
             //MessageBox.Show("Hadle request");
         }
 
-        public void Initialize()
+        public void Initialize(String mountPoint, String[] exposes)
         {
+            MountPoint = mountPoint;
             ToolTip = "This is a menu";
         }
 

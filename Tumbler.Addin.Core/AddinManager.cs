@@ -69,10 +69,10 @@ namespace Tumbler.Addin.Core
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
             ConfigFile = configFile;
-            _root = new RootNode(this);
+            _root = new RootNode();
             _nodes.Add(_root.FullPath, _root);
-            _nodes.Add(_root.InnerChildren[0].FullPath, _root.InnerChildren[0]);
-            _nodes.Add(_root.InnerChildren[1].FullPath, _root.InnerChildren[1]);
+            _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][0].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][0]);
+            _nodes.Add(_root.Children[AddinTreeNode.DefaultExposePoint][1].FullPath, _root.Children[AddinTreeNode.DefaultExposePoint][1]);
             CreateAddinTreeNodes();
             GenerateAddinTree();
             _isInit = true;
@@ -95,7 +95,7 @@ namespace Tumbler.Addin.Core
         public IAddin[] BuildFirstLevelAddins()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return BuildlAddins(_root.Children[0].Children);
+            return BuildlAddins(_root.Children["Default"][0].Children);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Tumbler.Addin.Core
         public IService[] BuildFirstLevelServices()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return (IService[])BuildlAddins(_root.Children[1].Children);
+            return (IService[])BuildlAddins(_root.Children["Default"][1].Children);
         }
 
         /// <summary>
@@ -318,9 +318,14 @@ namespace Tumbler.Addin.Core
             if (attribute == null) return null;
             String file = attribute.Value;
             if (String.IsNullOrWhiteSpace(file) || !File.Exists(file)) return null;
-            XElement xml = XElement.Load(file)?.Element("Runtimes");
+            XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
-            return new AddinNode(xml.Attribute("Path")?.Value, xml.Attribute("Id").Value, this, file);
+            String mountTo = xml.Attribute("MountTo")?.Value;
+            String point = xml.Attribute("MountPoint")?.Value;
+            String mountPoint = String.IsNullOrWhiteSpace(point) ? AddinTreeNode.DefaultExposePoint : point;
+            String id = xml.Attribute("Id").Value;
+            String[] exposes = xml.Elements("Expose")?.Attributes("Point")?.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Select(x => x.Value).ToArray();
+            return new AddinNode(mountTo, mountPoint, id, exposes, file);
         }
 
         /// <summary>
@@ -330,14 +335,15 @@ namespace Tumbler.Addin.Core
         {
             foreach (AddinTreeNode node in _nodes.Values.Skip(3).ToArray())
             {
-                if(_nodes.ContainsKey(node.Path))
+                if (_nodes.ContainsKey(node.MountTo))
                 {
-                    _nodes[node.Path].InnerChildren.Add(node);
+                    if (_nodes[node.MountTo].InnerChildren.ContainsKey(node.MountPoint))
+                    {
+                        _nodes[node.MountTo].InnerChildren[node.MountPoint].Add(node);
+                        continue;
+                    }
                 }
-                else
-                {
-                    _nodes.Remove(node.FullPath);
-                }
+                _nodes.Remove(node.FullPath);
             }
             Count = _nodes.Count - 2;
         }
@@ -346,16 +352,21 @@ namespace Tumbler.Addin.Core
         /// 构建插件列表。
         /// </summary>
         /// <returns>插件列表。</returns>
-        private IAddin[] BuildlAddins(ReadOnlyCollection<AddinTreeNode> nodes)
+        private IAddin[] BuildlAddins(ReadOnlyDictionary<String,Collection<AddinTreeNode>> nodes)
         {
             AddinNode addinNode = null;
+            Collection<AddinTreeNode> temp = null;
             Collection<IAddin> addins = new Collection<IAddin>();
-            foreach (AddinTreeNode node in nodes)
+            foreach(String point in nodes.Keys)
             {
-                addinNode = node as AddinNode;
-                if (addinNode != null)
+                temp = nodes[point];
+                foreach (AddinTreeNode node in temp)
                 {
-                    addins.Add(addinNode.Buid());
+                    addinNode = node as AddinNode;
+                    if (addinNode != null)
+                    {
+                        addins.Add(addinNode.Buid());
+                    }
                 }
             }
             return addins.ToArray();

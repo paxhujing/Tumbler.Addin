@@ -12,6 +12,8 @@ namespace Tumbler.Addin.CoreTests
 {
     public class ToolbarAddin : IAddin , IHandler
     {
+        public string MountPoint { get; private set; }
+
         public void Dispose()
         {
             WriteLine("Destroy ToolbarAddin");
@@ -27,8 +29,9 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("ToolbarAddin Handle message");
         }
 
-        public void Initialize()
+        public void Initialize(String mountPoint, String[] exposes)
         {
+            MountPoint = mountPoint;
             WriteLine("Initialize ToolbarAddin");
         }
 

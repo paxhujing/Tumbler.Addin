@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
-  <Runtimes Path="" Id="OpenFile" Type="Addin.Menu.OpenFile,Addin.Menu">
+  <Path MountTo="" MountPoint="" Id="OpenFile">
+  </Path>
+
+
+  <Runtimes Type="Addin.Menu.OpenFile,Addin.Menu">
 
     <!--引用的程序集-->
     <Assemblies>

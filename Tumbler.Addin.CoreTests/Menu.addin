@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
-  <Runtimes Path="/Addins" Id="Menu" Type="Tumbler.Addin.CoreTests.MenuAddin,Tumbler.Addin.CoreTests">
+  <Path MountTo="/Addins" MountPoint="Default" Id="Menu">
+    <!--插件向外提供的挂载点-->
+    <Expose Point="File"/>
+  </Path>
+
+  <Runtimes Type="Tumbler.Addin.CoreTests.MenuAddin,Tumbler.Addin.CoreTests">
 
     <!--引用的程序集-->
     <Assemblies>

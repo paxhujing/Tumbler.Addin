@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Addin Name="导出" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="导出文件">
+
+  <!--MountTo：插件要挂载到的节点-->
+  <!--MountPoint： 插件要挂载到的节点中的挂载点-->
+  <!--Id：插件节点的Id-->
+  <Path MountTo="./Addins/Menu" MountPoint="File" Id="Export"/>
+  
+  <Runtimes Type="Tumbler.Addin.WfpTest.Menu.ExportAddin,Tumbler.Addin.WfpTest.Menu">
+    
+    <!--引用的程序集-->
+    <Assemblies>
+      <Reference Path="E:/Tumbler.Addin/Tumbler.Addin.WfpTest.Menu/bin/Debug/Tumbler.Addin.WfpTest.Menu.dll"/>
+    </Assemblies>
+
+  </Runtimes>
+</Addin>

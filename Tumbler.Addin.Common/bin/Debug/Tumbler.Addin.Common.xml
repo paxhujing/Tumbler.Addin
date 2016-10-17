@@ -81,10 +81,17 @@
             表示一个插件。
             </summary>
         </member>
-        <member name="M:Tumbler.Addin.Common.IAddin.Initialize">
+        <member name="P:Tumbler.Addin.Common.IAddin.MountPoint">
+            <summary>
+            要挂载的挂载点。
+            </summary>
+        </member>
+        <member name="M:Tumbler.Addin.Common.IAddin.Initialize(System.String,System.String[])">
             <summary>
             初始化插件。
             </summary>
+            <param name="mountPoint">要挂载的挂载点。</param>
+            <param name="exposes">插件向外提供的挂载点</param>
         </member>
         <member name="M:Tumbler.Addin.Common.IAddin.Execute">
             <summary>

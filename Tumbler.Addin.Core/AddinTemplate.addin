@@ -1,7 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
+
+  <!--MountTo：插件要挂载到的节点-->
+  <!--MountPoint： 插件要挂载到的节点中的挂载点-->
+  <!--Id：插件节点的Id-->
+  <Path MountTo="" MountPoint="" Id="">
+    <!--插件向外提供的挂载点-->
+    <Expose Point=""/>
+    <Expose Point=""/>
+  </Path>
   
-  <Runtimes Path="" Id="" Type="">
+  <Runtimes Type="">
     
     <!--引用的程序集-->
     <Assemblies>

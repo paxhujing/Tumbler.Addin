@@ -71,7 +71,6 @@
     <Content Include="BadAddin.addin" />
     <Content Include="FontSelector.addin" />
     <Content Include="OpenFile.addin" />
-    <Content Include="File.addin" />
     <Content Include="Toolbar.addin" />
     <Content Include="Menu.addin" />
   </ItemGroup>

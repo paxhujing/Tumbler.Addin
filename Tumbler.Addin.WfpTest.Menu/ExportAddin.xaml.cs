@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Tumbler.Addin.Common;
-using Tumbler.Addin.Core;
 
 namespace Tumbler.Addin.WfpTest.Menu
 {
     /// <summary>
-    /// AddinManagerMenuAddin.xaml 的交互逻辑
+    /// ExportAddin.xaml 的交互逻辑
     /// </summary>
-    public partial class AddinManagerMenuAddin : MenuItem, IAddin
+    public partial class ExportAddin : MenuItem,IAddin
     {
-        public AddinManagerMenuAddin()
+        public ExportAddin()
         {
             InitializeComponent();
         }
@@ -35,25 +34,15 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Execute()
         {
-            AddinManager.Instance.SendMessage("./Addins/Menu", new System.Collections.Hashtable());
-            AddinManagerWin win = new AddinManagerWin();
-            win.ShowDialog();
         }
 
-        public void Initialize(String mountPoint, String[] exposes)
+        public void Initialize(string mountPoint, String[] exposes)
         {
             MountPoint = mountPoint;
         }
 
         public void OnDependencyStateChanged(string fullPath, AddinState? state)
         {
-            MessageBox.Show($"{fullPath} state changed {state}");
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-            Execute();
         }
     }
 }

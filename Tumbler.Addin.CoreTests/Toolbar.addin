@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
+  
+  <Path MountTo="/Addins" MountPoint="" Id="Toolbar">
+    <!--插件向外提供的挂载点-->
+    <Expose Point=""/>
+    <Expose Point=""/>
+  </Path>
 
-  <Runtimes Path="/Addins" Id="Toolbar" Type="Tumbler.Addin.CoreTests.ToolbarAddin,Tumbler.Addin.CoreTests">
+  <Runtimes Type="Tumbler.Addin.CoreTests.ToolbarAddin,Tumbler.Addin.CoreTests">
 
     <!--引用的程序集-->
     <Assemblies>
