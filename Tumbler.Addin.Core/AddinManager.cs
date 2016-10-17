@@ -107,21 +107,6 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 构建指定插件的下一级插件列表。
-        /// </summary>
-        /// <param name="addin">下一级插件的父级插件。</param>
-        /// <returns>下一级插件列表。</returns>
-        public IAddin[] BuildChildAddins(IAddin addin)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
-            IList<IAddin> addins = new List<IAddin>();
-            BuildImpl(descriptor.Owner.Children, ref addins);
-            return addins.ToArray();
-        }
-
-        /// <summary>
         /// 构建第一级的所有服务。
         /// </summary>
         /// <returns>第一级的所有服务列表。</returns>
@@ -131,28 +116,6 @@ namespace Tumbler.Addin.Core
             IList<IAddin> addins = new List<IAddin>();
             BuildImpl(_root.Children[AddinTreeNode.DefaultExposePoint][1].Children, ref addins);
             return addins.Cast<IService>().ToArray();
-        }
-
-        /// <summary>
-        /// 构建指定插件的下一级插件列表。
-        /// </summary>
-        /// <param name="service">下一级插件的父级服务。</param>
-        /// <returns>下一级服务列表。</returns>
-        public IService[] BuildChildService(IService service)
-        {
-            return (IService[])BuildChildAddins(service);
-        }
-
-        /// <summary>
-        /// 销毁插件。
-        /// </summary>
-        /// <param name="addin">插件。</param>
-        public void Destroy(IAddin addin)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
-            descriptor.Destroy();
         }
 
         /// <summary>
@@ -221,39 +184,11 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 获取插件的状态。
-        /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <returns>插件状态。</returns>
-        public AddinState GetAddinState(IAddin addin)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) return AddinState.Unknow;
-            return descriptor.AddinState;
-        }
-
-        /// <summary>
-        /// 设置插件的状态。
-        /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <param name="state">状态。</param>
-        /// <returns>设置成功返回true；否则返回false。</returns>
-        public Boolean SetAddinState(IAddin addin, AddinState state)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) return false;
-            descriptor.AddinState = state;
-            return true;
-        }
-
-        /// <summary>
         /// 向其它插件发送消息。
         /// </summary>
         /// <param name="fullPath">目标插件的完整路径。</param>
         /// <param name="message">消息。</param>
-        public void SendMessage(String fullPath, Hashtable message)
+        public void SendMessage(String fullPath, Object message)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinNode node = GetNode(fullPath) as AddinNode;
@@ -280,6 +215,75 @@ namespace Tumbler.Addin.Core
                 return _nodes[fullPath];
             }
             return null;
+        }
+
+        #endregion
+
+        #region Internal
+
+        /// <summary>
+        /// 构建指定插件的下一级插件列表。
+        /// </summary>
+        /// <param name="addin">下一级插件的父级插件。</param>
+        /// <returns>下一级插件列表。</returns>
+        internal IAddin[] BuildChildAddins(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
+            IList<IAddin> addins = new List<IAddin>();
+            BuildImpl(descriptor.Owner.Children, ref addins);
+            return addins.ToArray();
+        }
+
+        /// <summary>
+        /// 构建指定插件的下一级插件列表。
+        /// </summary>
+        /// <param name="service">下一级插件的父级服务。</param>
+        /// <returns>下一级服务列表。</returns>
+        internal IService[] BuildChildService(IService service)
+        {
+            return (IService[])BuildChildAddins(service);
+        }
+
+        /// <summary>
+        /// 销毁插件。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        internal void Destroy(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
+            descriptor.Destroy();
+        }
+
+        /// <summary>
+        /// 获取插件的状态。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>插件状态。</returns>
+        internal AddinState GetAddinState(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return AddinState.Unknow;
+            return descriptor.AddinState;
+        }
+
+        /// <summary>
+        /// 设置插件的状态。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <param name="state">状态。</param>
+        /// <returns>设置成功返回true；否则返回false。</returns>
+        internal Boolean SetAddinState(IAddin addin, AddinState state)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return false;
+            descriptor.AddinState = state;
+            return true;
         }
 
         #endregion
