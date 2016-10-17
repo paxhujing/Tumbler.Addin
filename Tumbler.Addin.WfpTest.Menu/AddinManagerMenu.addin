@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Addin>
-
-  <Info Name="插件管理器" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="用于插件的安装和卸载"/>
+<Addin Name="插件管理器" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="用于插件的安装和卸载">
   
   <Runtimes Path="./Addins/Menu" Id="AddinManager" Type="Tumbler.Addin.WfpTest.Menu.AddinManagerMenuAddin,Tumbler.Addin.WfpTest.Menu">
     

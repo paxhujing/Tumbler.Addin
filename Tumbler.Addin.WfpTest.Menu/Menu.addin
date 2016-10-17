@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Addin>
-
-  <Info Name="Menu" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="用于承载其它菜单项"/>
+<Addin Name="Menu" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="用于承载其它菜单项">
   
   <Runtimes Path="./Addins" Id="Menu" Type="Tumbler.Addin.WfpTest.Menu.MenuAddin,Tumbler.Addin.WfpTest.Menu">
     

@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Addin>
-
-  <Info Name="" Author="" Copyright="" Version="" Url="" Description=""/>
+<Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
   <Runtimes Path="/Addins" Id="Toolbar" Type="Tumbler.Addin.CoreTests.ToolbarAddin,Tumbler.Addin.CoreTests">
 
