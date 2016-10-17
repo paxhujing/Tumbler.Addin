@@ -74,10 +74,7 @@ namespace Tumbler.Addin.Core
         {
             if (_isInit) return;
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
-            if (!Path.IsPathRooted(configFile))
-            {
-                configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFile);
-            }
+            configFile = AddinManager.GetFileFullPath(configFile);
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
             ConfigFile = configFile;
             _root = new RootNode();
@@ -227,6 +224,28 @@ namespace Tumbler.Addin.Core
         #region Internal
 
         /// <summary>
+        /// 获取文件的完整路径。
+        /// </summary>
+        /// <param name="file">文件部分路径或完整路径。</param>
+        /// <returns>完整路径。</returns>
+        internal static String GetFileFullPath(String file)
+        {
+            String root = Path.GetPathRoot(file);
+            if (root == String.Empty)
+            {
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+            }
+            else if(root == @"\")
+            {
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file.Remove(0, 1));
+            }
+            else
+            {
+                return file;
+            }
+        }
+
+        /// <summary>
         /// 构建指定插件的下一级插件列表。
         /// </summary>
         /// <param name="addin">下一级插件的父级插件。</param>
@@ -306,11 +325,7 @@ namespace Tumbler.Addin.Core
             {
                 String file = x.Attribute("ref")?.Value;
                 if (String.IsNullOrWhiteSpace(file)) return false;
-                if (!Path.IsPathRooted(file))
-                {
-                    file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
-                }
-                return file == addinConfigFile;
+                return AddinManager.GetFileFullPath(file) == addinConfigFile;
             });
             if (removeItem != null)
             {
@@ -367,10 +382,7 @@ namespace Tumbler.Addin.Core
             if (attribute == null) return null;
             String file = attribute.Value;
             if (String.IsNullOrWhiteSpace(file)) return null;
-            if(!Path.IsPathRooted(file))
-            {
-                file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
-            }
+            file = AddinManager.GetFileFullPath(file);
             if (!File.Exists(file)) return null;
             XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");

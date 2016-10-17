@@ -295,11 +295,7 @@ namespace Tumbler.Addin.Core
             {
                 try
                 {
-                    file = reference;
-                    if (!Path.IsPathRooted(reference))
-                    {
-                        file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, reference);
-                    }
+                    file = AddinManager.GetFileFullPath(reference);
                     aname = AssemblyName.GetAssemblyName(file);
                     fullName = aname.FullName;
                     if (!assemblies.Any(x => x.FullName == fullName))
