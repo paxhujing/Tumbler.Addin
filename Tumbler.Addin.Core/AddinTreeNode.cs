@@ -71,7 +71,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取一个标识，表示该节点是一个插件节点还是路径节点。
         /// </summary>
-        public abstract Boolean IsVitual { get; }
+        public abstract Boolean IsVirtual { get; }
 
         /// <summary>
         /// 获取要挂载到的节点路径。

@@ -95,7 +95,7 @@ namespace Tumbler.Addin.Core
         public IAddin[] BuildFirstLevelAddins()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return BuildlAddins(_root.Children["Default"][0].Children);
+            return BuildlAddins(_root.Children[AddinTreeNode.DefaultExposePoint][0].Children);
         }
 
         /// <summary>
