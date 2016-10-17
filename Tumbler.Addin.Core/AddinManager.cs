@@ -91,7 +91,7 @@ namespace Tumbler.Addin.Core
         public IEnumerable<AddinBaseInfo> GetInstallAddinInfos()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return _nodes.Values.Skip(3).Cast<AddinNode>().Select(x=>x.Info);
+            return _nodes.Values.Skip(3).Where(x=>!x.IsVirtual).Cast<AddinNode>().Select(x=>x.Info);
         }
 
         /// <summary>
