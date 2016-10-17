@@ -81,8 +81,7 @@ namespace Tumbler.Addin.Common
                 throw new FileLoadException("Invalid addin config file");
             }
             AddinBaseInfo info = null;
-            XElement xml = XElement.Load(addinConfigFile);
-            XElement infoNode = xml.Element("Info");
+            XElement infoNode = XElement.Load(addinConfigFile);
             if (infoNode != null)
             {
                 info = new AddinBaseInfo();
