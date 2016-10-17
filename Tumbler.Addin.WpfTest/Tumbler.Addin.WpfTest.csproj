@@ -96,9 +96,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Addins.xml">
+    <None Include="Addins.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tumbler.Addin.Common\Tumbler.Addin.Common.csproj">

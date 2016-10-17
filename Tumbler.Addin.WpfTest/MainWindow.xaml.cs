@@ -27,7 +27,7 @@ namespace Tumbler.Addin.WpfTest
         public MainWindow()
         {
             InitializeComponent();
-            _manager.Initialize(@"E:\Tumbler.Addin\Tumbler.Addin.WpfTest\Addins.xml");
+            _manager.Initialize(@"Addins.xml");
             IAddin addin = _manager.BuildFirstLevelAddins()[0];
             MenuPanel.Content = addin;
         }

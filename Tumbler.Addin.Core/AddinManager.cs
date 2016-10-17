@@ -67,6 +67,10 @@ namespace Tumbler.Addin.Core
         {
             if (_isInit) return;
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
+            if(!Path.IsPathRooted(configFile))
+            {
+                configFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFile);
+            }
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
             ConfigFile = configFile;
             _root = new RootNode();
@@ -317,7 +321,12 @@ namespace Tumbler.Addin.Core
             XAttribute attribute = element.Attribute("ref");
             if (attribute == null) return null;
             String file = attribute.Value;
-            if (String.IsNullOrWhiteSpace(file) || !File.Exists(file)) return null;
+            if (String.IsNullOrWhiteSpace(file)) return null;
+            if(!Path.IsPathRooted(file))
+            {
+                file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+            }
+            if (File.Exists(file)) return null;
             XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             String mountTo = xml.Attribute("MountTo")?.Value;
