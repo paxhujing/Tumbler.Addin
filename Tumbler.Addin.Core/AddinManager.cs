@@ -337,9 +337,17 @@ namespace Tumbler.Addin.Core
                 }
             }
             Func<XElement, Boolean> filter = Filter;
-            foreach (XElement element in xml.Elements("Addin"))
+            IEnumerable<XElement> loadList = null;
+            if (filter != null)
             {
-                if (!filter(element)) continue;
+                loadList = xml.Elements("Addin").Where(filter);
+            }
+            else
+            {
+                loadList = xml.Elements("Addin");
+            }
+            foreach (XElement element in loadList)
+            {
                 node = GetAddinTreeNode(element);
                 if (node != null && !_nodes.ContainsKey(node.FullPath))
                 {
