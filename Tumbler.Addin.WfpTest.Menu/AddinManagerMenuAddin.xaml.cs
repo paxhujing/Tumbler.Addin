@@ -27,7 +27,7 @@ namespace Tumbler.Addin.WfpTest.Menu
             InitializeComponent();
         }
 
-        public string MountPoint { get; private set; }
+        public string MountExpose { get; private set; }
 
         public void Dispose()
         {
@@ -40,9 +40,9 @@ namespace Tumbler.Addin.WfpTest.Menu
             win.ShowDialog();
         }
 
-        public void Initialize(String mountPoint, String[] exposes)
+        public void Initialize(String mountExpose, String[] exposes)
         {
-            MountPoint = mountPoint;
+            MountExpose = mountExpose;
         }
 
         public void OnDependencyStateChanged(string fullPath, AddinState state)

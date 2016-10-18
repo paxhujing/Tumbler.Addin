@@ -18,12 +18,12 @@ namespace Tumbler.Addin.Core
         /// 初始化类型 Tumbler.Addin.Core.AddinNode 实例。
         /// </summary>
         /// <param name="mountTo">要挂载到的节点。</param>
-        /// <param name="mountPoint">要挂载到的节点中的挂载点。</param>
+        /// <param name="mountExpose">要挂载到的节点中的挂载点。</param>
         /// <param name="id">插件Id。</param>
         /// <param name="exposes">向外提供的挂载点。</param>
         /// <param name="addinConfigFile">插件的配置文件。</param>
-        public AddinNode(String mountTo, String mountPoint, String id, String[] exposes, String addinConfigFile)
-            : base(mountTo, mountPoint, id, exposes)
+        public AddinNode(String mountTo, String mountExpose, String id, String[] exposes, String addinConfigFile)
+            : base(mountTo, mountExpose, id, exposes)
         {
             if (String.IsNullOrWhiteSpace(addinConfigFile))
             {

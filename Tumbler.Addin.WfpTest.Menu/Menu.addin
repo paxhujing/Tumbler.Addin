@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="Menu" Author="胡景" Copyright="乐图" Version="1.0.0.0" Url="http://cn.bing.com" Description="用于承载其它菜单项">
   
-  <Path MountTo="./Addins/Main" MountPoint="Menu" Id="Menu">
+  <Path MountTo="./Addins/Main" MountExpose="Menu" Id="Menu">
     <!--插件向外提供的挂载点-->
     <Expose Point="File"/>
   </Path>

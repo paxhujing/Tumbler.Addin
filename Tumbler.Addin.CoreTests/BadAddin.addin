@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
-  <Path MountTo="" MountPoint="" Id="OpenFile">
+  <Path MountTo="" MountExpose="" Id="OpenFile">
   </Path>
 
 

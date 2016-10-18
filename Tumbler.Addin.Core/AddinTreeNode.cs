@@ -38,10 +38,10 @@ namespace Tumbler.Addin.Core
         /// 初始化类型 Tumbler.Addin.Core.AddinTreeNode 实例。
         /// </summary>
         /// <param name="mountTo">要挂载到的节点。</param>
-        /// <param name="mountPoint">要挂载到的节点中的挂载点。</param>
+        /// <param name="mountExpose">要挂载到的节点中的挂载点。</param>
         /// <param name="id">插件Id。</param>
         /// <param name="exposes">向外提供的挂载点。</param>
-        protected AddinTreeNode(String mountTo, String mountPoint, String id, String[] exposes)
+        protected AddinTreeNode(String mountTo, String mountExpose, String id, String[] exposes)
         {
             if (mountTo == null)
             {
@@ -52,7 +52,7 @@ namespace Tumbler.Addin.Core
                 throw new ArgumentNullException("id");
             }
             MountTo = CompletePath(mountTo);
-            MountPoint = mountPoint;
+            MountExpose = mountExpose;
             Id = id;
             FullPath = GetFullPath();
             _hash = FullPath.GetHashCode();
@@ -76,7 +76,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取要挂载到的节点中的挂载点。
         /// </summary>
-        public String MountPoint { get; }
+        public String MountExpose { get; }
 
         /// <summary>
         /// 获取插件Id。
@@ -254,11 +254,11 @@ namespace Tumbler.Addin.Core
         private String GetFullPath()
         {
             String mountTo = MountTo;
-            String mountPoint = MountPoint;
+            String mountExpose = MountExpose;
             String temp = mountTo;
-            if (!String.IsNullOrWhiteSpace(mountPoint) && DefaultExposePoint != mountPoint)
+            if (!String.IsNullOrWhiteSpace(mountExpose) && DefaultExposePoint != mountExpose)
             {
-                temp = $"{mountTo}/{mountPoint}";
+                temp = $"{mountTo}/{mountExpose}";
             }
             if (mountTo != String.Empty)
             {

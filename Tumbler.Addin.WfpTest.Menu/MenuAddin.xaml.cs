@@ -28,7 +28,7 @@ namespace Tumbler.Addin.WfpTest.Menu
             InitializeComponent();
         }
 
-        public string MountPoint { get; private set; }
+        public string MountExpose { get; private set; }
 
         public void Dispose()
         {
@@ -39,7 +39,7 @@ namespace Tumbler.Addin.WfpTest.Menu
             IAddin[] addins = this.BuildChildAddins();
             foreach (IAddin addin in addins)
             {
-                switch(addin.MountPoint)
+                switch(addin.MountExpose)
                 {
                     case "File":
                         FileMenu.Items.Add(addin);
@@ -58,7 +58,7 @@ namespace Tumbler.Addin.WfpTest.Menu
 
         public void Initialize(String mountPoint, String[] exposes)
         {
-            MountPoint = mountPoint;
+            MountExpose = mountPoint;
             ToolTip = "This is a menu";
         }
 

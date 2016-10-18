@@ -387,10 +387,10 @@ namespace Tumbler.Addin.Core
             XElement xml = XElement.Load(file)?.Element("Path");
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             String mountTo = xml.Attribute("MountTo")?.Value;
-            String mountPoint = xml.Attribute("MountPoint")?.Value;
+            String mountExpose = xml.Attribute("MountExpose")?.Value;
             String id = xml.Attribute("Id").Value;
             String[] exposes = xml.Elements("Expose")?.Attributes("Point")?.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Select(x => x.Value).ToArray();
-            return new AddinNode(mountTo, mountPoint, id, exposes, file);
+            return new AddinNode(mountTo, mountExpose, id, exposes, file);
         }
 
         /// <summary>
@@ -402,7 +402,7 @@ namespace Tumbler.Addin.Core
             {
                 if (_nodes.ContainsKey(node.MountTo))
                 {
-                    _nodes[node.MountTo].SetChild(node, node.MountPoint);
+                    _nodes[node.MountTo].SetChild(node, node.MountExpose);
                     continue;
                 }
                 _nodes.Remove(node.FullPath);

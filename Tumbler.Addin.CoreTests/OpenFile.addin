@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
   
-  <Path MountTo="/Addins/Menu" MountPoint="File" Id="OpenFile">
+  <Path MountTo="/Addins/Menu" MountExpose="File" Id="OpenFile">
   </Path>
 
   <Runtimes Type="Addin.Menu.OpenFile,Addin.Menu">

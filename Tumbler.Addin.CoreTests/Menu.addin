@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
-  <Path MountTo="/Addins" MountPoint="Default" Id="Menu">
+  <Path MountTo="/Addins" MountExpose="Default" Id="Menu">
     <!--插件向外提供的挂载点-->
     <Expose Point="File"/>
   </Path>

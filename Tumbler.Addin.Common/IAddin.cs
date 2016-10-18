@@ -16,7 +16,7 @@ namespace Tumbler.Addin.Common
         /// <summary>
         /// 要挂载的挂载点。
         /// </summary>
-        String MountPoint { get; }
+        String MountExpose { get; }
 
         #endregion
 
@@ -25,9 +25,9 @@ namespace Tumbler.Addin.Common
         /// <summary>
         /// 初始化插件。
         /// </summary>
-        /// <param name="mountPoint">要挂载的挂载点。</param>
+        /// <param name="mountExpose">要挂载的挂载点。</param>
         /// <param name="exposes">插件向外提供的挂载点</param>
-        void Initialize(String mountPoint, String[] exposes);
+        void Initialize(String mountExpose, String[] exposes);
 
         /// <summary>
         /// 执行插件提供的功能。

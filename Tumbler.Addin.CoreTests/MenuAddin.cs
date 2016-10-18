@@ -11,7 +11,7 @@ namespace Tumbler.Addin.CoreTests
 {
     public class MenuAddin : IAddin
     {
-        public string MountPoint { get; private set; }
+        public string MountExpose { get; private set; }
 
         public void Dispose()
         {
@@ -23,9 +23,9 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("Execute MenuAddin");
         }
 
-        public void Initialize(String mountPoint, String[] exposes)
+        public void Initialize(String mountExpose, String[] exposes)
         {
-            MountPoint = mountPoint;
+            MountExpose = mountExpose;
             WriteLine("Initialize MenuAddin");
         }
 

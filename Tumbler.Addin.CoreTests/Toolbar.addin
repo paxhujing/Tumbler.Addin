@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
   
-  <Path MountTo="/Addins" MountPoint="" Id="Toolbar">
+  <Path MountTo="/Addins" MountExpose="" Id="Toolbar">
     <!--插件向外提供的挂载点-->
     <Expose Point=""/>
     <Expose Point=""/>

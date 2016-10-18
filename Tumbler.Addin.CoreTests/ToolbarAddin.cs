@@ -12,7 +12,7 @@ namespace Tumbler.Addin.CoreTests
 {
     public class ToolbarAddin : IAddin , IHandler
     {
-        public string MountPoint { get; private set; }
+        public string MountExpose { get; private set; }
 
         public void Dispose()
         {
@@ -29,9 +29,9 @@ namespace Tumbler.Addin.CoreTests
             WriteLine("ToolbarAddin Handle message");
         }
 
-        public void Initialize(String mountPoint, String[] exposes)
+        public void Initialize(String mountExpose, String[] exposes)
         {
-            MountPoint = mountPoint;
+            MountExpose = mountExpose;
             WriteLine("Initialize ToolbarAddin");
         }
 
