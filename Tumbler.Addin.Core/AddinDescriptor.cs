@@ -217,7 +217,7 @@ namespace Tumbler.Addin.Core
         private IAddin GetInstance()
         {
             IAddin addin = (IAddin)Activator.CreateInstance(_type);
-            addin.Initialize(Owner.MountExpose, Owner.Exposes);
+            addin.Initialize();
             AddinsDescriptor.Add(addin, this);
             Addin = addin;
             InitializeAddinState();

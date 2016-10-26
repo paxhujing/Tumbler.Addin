@@ -61,5 +61,45 @@ namespace Tumbler.Addin.Core
         {
             return AddinManager.Instance.BuildChildService(service);
         }
+
+        /// <summary>
+        /// 获取插件的挂载点。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载点。</returns>
+        public static String GetMountExpose(this IAddin addin)
+        {
+            return AddinManager.Instance.GetMountExpose(addin);
+        }
+
+        /// <summary>
+        /// 获取插件的暴露点。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>插件的暴露点。</returns>
+        public static String[] GetExposes(this IAddin addin)
+        {
+            return AddinManager.Instance.GetExposes(addin);
+        }
+
+        /// <summary>
+        /// 获取插件的挂载路径。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载路径。</returns>
+        public static String GetMountTo(this IAddin addin)
+        {
+            return AddinManager.Instance.GetMountTo(addin);
+        }
+
+        /// <summary>
+        /// 获取插件挂载的完整路径。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载的完整路径。</returns>
+        public static String GetFullPath(this IAddin addin)
+        {
+            return AddinManager.Instance.GetFullPath(addin);
+        }
     }
 }

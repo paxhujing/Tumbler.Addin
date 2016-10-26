@@ -69,8 +69,8 @@ namespace Tumbler.Addin.Core
         /// 初始化插件管理器。
         /// </summary>
         /// <param name="configFile">配置文件。</param>
-        /// <param name="initPoints">初始化挂载点。</param>
-        public void Initialize(String configFile, Tuple<String, String, String[]>[] initPoints = null)
+        /// <param name="initExposes">初始化挂载点。</param>
+        public void Initialize(String configFile, Tuple<String, String, String[]>[] initExposes = null)
         {
             if (_isInit) return;
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
@@ -81,7 +81,7 @@ namespace Tumbler.Addin.Core
             _nodes.Add(_root.FullPath, _root);
             _nodes.Add(_root.GetChilds()[0].FullPath, _root.GetChilds()[0]);
             _nodes.Add(_root.GetChilds()[1].FullPath, _root.GetChilds()[1]);
-            CreateAddinTreeNodes(initPoints);
+            CreateAddinTreeNodes(initExposes);
             GenerateAddinTree();
             _isInit = true;
         }
@@ -296,6 +296,58 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 获取插件挂载的完整路径。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载的完整路径。</returns>
+        internal String GetFullPath(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return null;
+            return descriptor.Owner.FullPath;
+        }
+
+        /// <summary>
+        /// 获取插件的挂载路径。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载路径。</returns>
+        internal String GetMountTo(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return null;
+            return descriptor.Owner.MountTo;
+        }
+
+        /// <summary>
+        /// 获取插件的挂载点。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>挂载点。</returns>
+        internal String GetMountExpose(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return null;
+            return descriptor.Owner.MountExpose;
+        }
+
+        /// <summary>
+        /// 获取插件的暴露点。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>插件的暴露点。</returns>
+        internal String[] GetExposes(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) return null;
+            return descriptor.Owner.Exposes;
+        }
+
+        /// <summary>
         /// 设置插件的状态。
         /// </summary>
         /// <param name="addin">插件。</param>
@@ -337,15 +389,15 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 创建插件树节点列表。
         /// </summary>
-        /// <param name="initPoints">初始化挂载点。</param>
-        private void CreateAddinTreeNodes(Tuple<String, String, String[]>[] initPoints)
+        /// <param name="initExposes">初始化挂载点。</param>
+        private void CreateAddinTreeNodes(Tuple<String, String, String[]>[] initExposes)
         {
             XElement xml = XElement.Load(ConfigFile);
             if (xml == null) throw new FileLoadException("Invalid addin manager config file");
             AddinTreeNode node = null;
-            if (initPoints != null && initPoints.Length != 0)
+            if (initExposes != null && initExposes.Length != 0)
             {
-                foreach(Tuple<String, String, String[]> point in initPoints)
+                foreach(Tuple<String, String, String[]> point in initExposes)
                 {
                     node = new VirtualNode(point.Item1, AddinTreeNode.DefaultExposePoint, point.Item2, point.Item3);
                     _nodes.Add(node.FullPath, node);
