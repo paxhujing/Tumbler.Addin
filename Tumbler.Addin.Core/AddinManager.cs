@@ -440,9 +440,10 @@ namespace Tumbler.Addin.Core
             if (xml == null) throw new FileLoadException("Invalid addin installation file");
             String mountTo = xml.Attribute("MountTo")?.Value;
             String mountExpose = xml.Attribute("MountExpose")?.Value;
+            Guid guid = Guid.Parse(xml.Attribute("Guid").Value);
             String id = xml.Attribute("Id").Value;
             String[] exposes = xml.Elements("Expose")?.Attributes("Point")?.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Select(x => x.Value).ToArray();
-            return new AddinNode(mountTo, mountExpose, id, exposes, file);
+            return new AddinNode(mountTo, mountExpose, id, guid, exposes, file);
         }
 
         /// <summary>

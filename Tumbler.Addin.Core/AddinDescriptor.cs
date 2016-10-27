@@ -35,7 +35,7 @@ namespace Tumbler.Addin.Core
         /// <param name="owner">拥有此描述符的插件节点。</param>
         /// <param name="references"></param>
         /// <param name="depedencies"></param>
-        private AddinDescriptor(String type, AddinTreeNode owner, String[] references, String[] depedencies)
+        private AddinDescriptor(String type, AddinNode owner, String[] references, String[] depedencies)
         {
             if (String.IsNullOrWhiteSpace(type)) throw new ArgumentNullException("type");
             if (owner == null) throw new ArgumentNullException("owner");
@@ -65,7 +65,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 拥有此描述符的插件节点。
         /// </summary>
-        public AddinTreeNode Owner { get; }
+        public AddinNode Owner { get; }
 
         /// <summary>
         /// 获取实现了IAddin接口的类型名称。
@@ -135,7 +135,7 @@ namespace Tumbler.Addin.Core
         /// <param name="configFile">插件的置文件。</param>
         /// <param name="owner">拥有此描述符的插件节点。</param>
         /// <returns>插件的描述。</returns>
-        public static AddinDescriptor Parse(String configFile, AddinTreeNode owner)
+        public static AddinDescriptor Parse(String configFile, AddinNode owner)
         {
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
             XElement xml = XElement.Load(configFile)?.Element("Runtimes");
@@ -274,22 +274,35 @@ namespace Tumbler.Addin.Core
                 },
                 (a,s,b)=>
                 {
-                    _type = a.GetType(s);
-                    if (_type == null)
+                    Type temp = a.GetType(s);
+                    if (temp == null)
                     {
                         BuildState = AddinBuildState.LoadTypeFail;
                     }
-                    return _type;
+                    return temp;
                 },true);
             if (type.GetInterface(typeof(IAddin).FullName) == null)
             {
                 BuildState = AddinBuildState.LoadTypeFail;
                 throw new TypeLoadException($"{type.FullName} must implement IAddin interface");
             }
+            AddinAttribute attr = type.GetCustomAttribute<AddinAttribute>();
+            if (attr == null)
+            {
+                BuildState = AddinBuildState.LoadTypeFail;
+                throw new AddinAttributeException($"{type.FullName} can not find 'AddinAttribute'");
+            }
+            if (attr.Guid != Owner.Guid)
+            {
+                BuildState = AddinBuildState.LoadTypeFail;
+                throw new AddinAttributeException($"{type.FullName} guid not match");
+            }
+            //if(guid)
             if (type.GetInterface(typeof(IHandler).FullName) != null)
             {
                 CanRecieveMessage = true;
             }
+            _type = type;
         }
 
         /// <summary>

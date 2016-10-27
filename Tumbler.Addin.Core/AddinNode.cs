@@ -20,15 +20,17 @@ namespace Tumbler.Addin.Core
         /// <param name="mountTo">要挂载到的节点。</param>
         /// <param name="mountExpose">要挂载到的节点中的挂载点。</param>
         /// <param name="id">插件Id。</param>
+        /// <param name="guid">插件的Guid。</param>
         /// <param name="exposes">向外提供的挂载点。</param>
         /// <param name="addinConfigFile">插件的配置文件。</param>
-        public AddinNode(String mountTo, String mountExpose, String id, String[] exposes, String addinConfigFile)
+        public AddinNode(String mountTo, String mountExpose, String id,Guid guid, String[] exposes, String addinConfigFile)
             : base(mountTo, mountExpose, id, exposes)
         {
             if (String.IsNullOrWhiteSpace(addinConfigFile))
             {
                 throw new ArgumentNullException("configFile");
             }
+            Guid = guid;
             AddinConfigFile = addinConfigFile;
             Descriptor = new Lazy<AddinDescriptor>(() => AddinDescriptor.Parse(AddinConfigFile, this));
         }
@@ -36,6 +38,11 @@ namespace Tumbler.Addin.Core
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// 插件的Guid。
+        /// </summary>
+        public Guid Guid { get; }
 
         /// <summary>
         /// 获取一个标识，表示该节点是一个插件节点还是路径节点。

@@ -3,19 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.Test", "Tumbler.Addin.Test\Tumbler.Addin.Test.csproj", "{4C0AF59D-79B5-49C3-AEA0-ABA3F6E2F015}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.Core", "Tumbler.Addin.Core\Tumbler.Addin.Core.csproj", "{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin.Menu", "Addin.Menu\Addin.Menu.csproj", "{13258859-7523-495D-8AC6-BA0E842028FB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.CoreTests", "Tumbler.Addin.CoreTests\Tumbler.Addin.CoreTests.csproj", "{943620F3-0DFE-443A-B520-CF39DE6687BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.Common", "Tumbler.Addin.Common\Tumbler.Addin.Common.csproj", "{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.WpfTest", "Tumbler.Addin.WpfTest\Tumbler.Addin.WpfTest.csproj", "{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tumbler.Addin.WfpTest.Menu", "Tumbler.Addin.WfpTest.Menu\Tumbler.Addin.WfpTest.Menu.csproj", "{CA7D56E1-323E-4AB2-8284-917ECE5EC47B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,34 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4C0AF59D-79B5-49C3-AEA0-ABA3F6E2F015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C0AF59D-79B5-49C3-AEA0-ABA3F6E2F015}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C0AF59D-79B5-49C3-AEA0-ABA3F6E2F015}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C0AF59D-79B5-49C3-AEA0-ABA3F6E2F015}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6667621-2A7C-40D4-99A9-54E37BCAB2FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13258859-7523-495D-8AC6-BA0E842028FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13258859-7523-495D-8AC6-BA0E842028FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13258859-7523-495D-8AC6-BA0E842028FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13258859-7523-495D-8AC6-BA0E842028FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{943620F3-0DFE-443A-B520-CF39DE6687BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{943620F3-0DFE-443A-B520-CF39DE6687BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{943620F3-0DFE-443A-B520-CF39DE6687BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{943620F3-0DFE-443A-B520-CF39DE6687BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97CFD8EA-0225-4C74-A94A-DCCD8E8F37C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7FFD8BB-C8E8-415D-9EEB-E04F6822F48D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA7D56E1-323E-4AB2-8284-917ECE5EC47B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA7D56E1-323E-4AB2-8284-917ECE5EC47B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA7D56E1-323E-4AB2-8284-917ECE5EC47B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA7D56E1-323E-4AB2-8284-917ECE5EC47B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

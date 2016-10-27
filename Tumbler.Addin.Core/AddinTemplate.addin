@@ -1,23 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Addin Name="" Author="" Copyright="" Version="" Url="" Description="">
 
+  <!--插件挂载的完整路径由 MountTo/MountExpose组成-->
   <!--MountTo：插件要挂载到的节点-->
-  <!--MountExpose： 插件要挂载到的节点中的挂载点-->
+  <!--MountExpose： 插件要挂载到的暴露点-->
   <!--Id：插件节点的Id-->
-  <Path MountTo="" MountExpose="" Id="">
-    <!--插件向外提供的挂载点-->
+  <!--Guid: 插件的Guid-->
+  <Path MountTo="" MountExpose="" Id="" Guid="">
+    <!--插件向外暴露的挂载点-->
     <Expose Point=""/>
     <Expose Point=""/>
   </Path>
   
+  <!--Type：实现了IAddin接口的类型限定名-->
   <Runtimes Type="">
     
     <!--引用的程序集-->
     <Assemblies>
+      <!--程序集文件所在路径-->
+      <Assembly Path=""/>
     </Assemblies>
 
     <!--依赖的其它插件-->
     <Dependencies>
+      <!--依赖的插件所在的完整路径-->
+      <Depdency Path=""/>
     </Dependencies>
 
   </Runtimes>

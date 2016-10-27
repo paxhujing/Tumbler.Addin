@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Addins>
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Menu.addin"/>
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\Toolbar.addin" />
-  <Addin ref="E:\Tumbler.Addin\Tumbler.Addin.CoreTests\OpenFile.addin" />
-</Addins>
