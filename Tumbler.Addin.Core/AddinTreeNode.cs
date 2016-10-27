@@ -28,8 +28,6 @@ namespace Tumbler.Addin.Core
 
         private readonly Int32 _hash;
 
-
-
         #endregion
 
         #region Constructors
@@ -156,26 +154,10 @@ namespace Tumbler.Addin.Core
         /// <returns>子节点。</returns>
         internal ReadOnlyCollection<AddinTreeNode> GetChilds(String expose = null)
         {
-            String[] items = Exposes;
-            if (items == null) return null;
-            if (String.IsNullOrWhiteSpace(expose))
+            String mount;
+            if (TryGetMount(out mount, expose))
             {
-                if (IsVirtual)
-                {
-                    expose = DefaultExposePoint;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            for (Int32 i = 0; i < items.Length; i++)
-            {
-                if (items[i] == expose)
-                {
-                    String mount = $"{FullPath}/{expose}";
-                    return GetReadOnlyCollection(mount);
-                }
+                return GetReadOnlyCollection(mount);
             }
             return null;
         }
@@ -187,8 +169,29 @@ namespace Tumbler.Addin.Core
         /// <param name="child">子节点。</param>
         internal void SetChild(AddinTreeNode child, String expose = null)
         {
+            String mount;
+            if (TryGetMount(out mount, expose))
+            {
+                Collection<AddinTreeNode> c = GetOrAddCollection(mount);
+                c.Add(child);
+            }
+        }
+
+        #endregion
+
+        #region Private
+
+        /// <summary>
+        /// 尝试获取暴露点所在的完整路径。
+        /// </summary>
+        /// <param name="mount">暴露点所在的完整路径。</param>
+        /// <param name="expose">暴露点。</param>
+        /// <returns>如果成功返回true；否则返回false。</returns>
+        private Boolean TryGetMount(out String mount, String expose = null)
+        {
+            mount = null;
             String[] items = Exposes;
-            if (items == null) return;
+            if (items == null) return false;
             if (String.IsNullOrWhiteSpace(expose))
             {
                 if (IsVirtual)
@@ -197,24 +200,20 @@ namespace Tumbler.Addin.Core
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
             }
+
             for (Int32 i = 0; i < items.Length; i++)
             {
                 if (items[i] == expose)
                 {
-                    String mount = $"{FullPath}/{expose}";
-                    Collection<AddinTreeNode> c = GetOrAddCollection(mount);
-                    c.Add(child);
+                    mount = $"{FullPath}/{expose}";
                     break;
                 }
             }
+            return true;
         }
-
-        #endregion
-
-        #region Private
 
         /// <summary>
         /// 获取或者添加一个子节点集合。
