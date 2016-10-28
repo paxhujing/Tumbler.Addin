@@ -34,6 +34,30 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="fullPath">目标插件的完整路径。</param>
+        /// <param name="content">消息内容。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        public static void SendMessage(this Object sender, String fullPath, Object content, Boolean isAsync = false)
+        {
+            AddinManager.Instance.SendMessage(sender, fullPath, content, isAsync);
+        }
+
+        /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="fullPath">目标插件的完整路径。</param>
+        /// <param name="content">消息内容。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        public static void SendMessage<TCotnent>(this Object sender, String fullPath, TCotnent content, Boolean isAsync = false)
+        {
+            AddinManager.Instance.SendMessage<TCotnent>(sender, fullPath, content, isAsync);
+        }
+
+        /// <summary>
         /// 销毁插件。
         /// </summary>
         /// <param name="addin">插件。</param>

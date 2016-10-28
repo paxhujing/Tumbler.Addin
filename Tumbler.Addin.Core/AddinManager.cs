@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Tumbler.Addin.Common;
@@ -186,23 +187,6 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件发送消息。
-        /// </summary>
-        /// <param name="fullPath">目标插件的完整路径。</param>
-        /// <param name="message">消息。</param>
-        public void SendMessage(String fullPath, Object message)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinNode node = GetNode(fullPath) as AddinNode;
-            if (node == null) return;
-            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
-            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build && descriptor.CanRecieveMessage)
-            {
-                ((IHandler)descriptor.Addin).Handle(message);
-            }
-        }
-
-        /// <summary>
         /// 获取指定路径的插件树节点。
         /// </summary>
         /// <param name="fullPath">路径。</param>
@@ -222,6 +206,68 @@ namespace Tumbler.Addin.Core
         #endregion
 
         #region Internal
+
+        /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="fullPath">目标插件的完整路径。</param>
+        /// <param name="content">消息内容。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        internal void SendMessage(Object sender, String fullPath, Object content, Boolean isAsync = false)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinNode node = GetNode(fullPath) as AddinNode;
+            if (node == null) return;
+            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+            {
+                IHandler handler = descriptor.Addin as IHandler;
+                if (handler == null) return;
+                if (!isAsync)
+                {
+                    handler.Handle(new MessageArgs(sender, fullPath, content));
+                }
+                else
+                {
+                    ThreadPool.QueueUserWorkItem(o =>
+                    {
+                        handler.Handle(new MessageArgs(sender, fullPath, content));
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="fullPath">目标插件的完整路径。</param>
+        /// <param name="content">消息。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        internal void SendMessage<TContent>(Object sender, String fullPath, TContent content, Boolean isAsync = false)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinNode node = GetNode(fullPath) as AddinNode;
+            if (node == null) return;
+            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+            {
+                IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
+                if (handler == null) return;
+                if (!isAsync)
+                {
+                    handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
+                }
+                else
+                {
+                    ThreadPool.QueueUserWorkItem(o =>
+                    {
+                        handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
+                    });
+                }
+            }
+        }
 
         /// <summary>
         /// 获取文件的完整路径。

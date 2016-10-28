@@ -48,6 +48,7 @@
     <Compile Include="IAddin.cs" />
     <Compile Include="IHandler.cs" />
     <Compile Include="IService.cs" />
+    <Compile Include="MessageArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
