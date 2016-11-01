@@ -106,7 +106,7 @@ namespace Tumbler.Addin.Core
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             IList<IAddin> addins = new List<IAddin>();
             BuildImpl(_root.GetChilds()[0], ref addins);
-            return addins.ToArray(); ;
+            return addins.ToArray();
         }
 
         /// <summary>
@@ -550,7 +550,13 @@ namespace Tumbler.Addin.Core
                     }
                     else
                     {
-                        addins.Add(((AddinNode)item).Buid());
+                        try
+                        {
+                            addins.Add(((AddinNode)item).Buid());
+                        }
+                        catch (Exception)
+                        {
+                        }
                     }
                 }
             }
