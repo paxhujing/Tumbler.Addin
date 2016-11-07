@@ -155,7 +155,6 @@ namespace Tumbler.Addin.Core
         /// </summary>
         private void Analysis()
         {
-            AnalysisDependencies();
             AnalysisAssemblies();
             BuildDependencies();
             BuildState = AddinBuildState.NotBuild;

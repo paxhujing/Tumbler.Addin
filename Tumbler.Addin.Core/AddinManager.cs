@@ -554,7 +554,7 @@ namespace Tumbler.Addin.Core
                         {
                             addins.Add(((AddinNode)item).Buid());
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                         }
                     }
