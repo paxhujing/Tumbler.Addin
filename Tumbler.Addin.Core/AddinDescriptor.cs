@@ -311,10 +311,11 @@ namespace Tumbler.Addin.Core
                     file = AddinManager.GetFileFullPath(reference);
                     aname = AssemblyName.GetAssemblyName(file);
                     fullName = aname.FullName;
-                    if (!assemblies.Any(x => x.FullName == fullName))
+                    if (assemblies.Any(x => x.FullName == fullName))
                     {
-                        Assembly.LoadFrom(file);
+                        continue;
                     }
+                    Assembly.LoadFrom(file);
                 }
                 catch (Exception)
                 {
