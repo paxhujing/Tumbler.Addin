@@ -125,6 +125,20 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 获取依赖于该插件的其它插件列表。
+        /// </summary>
+        /// <param name="fullPath">该插件的路径。</param>
+        /// <returns>依赖于该插件的其它插件列表。</returns>
+        public static Collection<AddinDescriptor> GetDependencies(String fullPath)
+        {
+            if(DepdencieTable.ContainsKey(fullPath))
+            {
+                return DepdencieTable[fullPath];
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 根据插件的配置文件得到插件的描述。
         /// </summary>
         /// <param name="configFile">插件的置文件。</param>

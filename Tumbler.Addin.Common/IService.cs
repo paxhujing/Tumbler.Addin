@@ -14,9 +14,9 @@ namespace Tumbler.Addin.Common
         #region Properties
 
         /// <summary>
-        /// 获取一个标识。该标识表明服务是否正在运行中。
+        /// 获取服务的状态。
         /// </summary>
-        Boolean IsRuning { get; }
+        ServiceState State { get; }
 
         #endregion
 

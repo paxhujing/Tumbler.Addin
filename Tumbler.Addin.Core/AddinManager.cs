@@ -255,9 +255,9 @@ namespace Tumbler.Addin.Core
             {
                 IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
                 if (handler == null) return;
-                if (!isAsync)
+                if (!isAsync) 
                 {
-                    handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
+                     handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
                 }
                 else
                 {
@@ -406,6 +406,34 @@ namespace Tumbler.Addin.Core
             if (descriptor == null) return false;
             descriptor.AddinState = state;
             return true;
+        }
+
+        /// <summary>
+        /// 停止依赖该服务的其它服务。
+        /// </summary>
+        /// <param name="service">主服务。</param>
+        internal void StopDependencies(IService service)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(service);
+            if (descriptor == null) throw new InvalidOperationException("This service is out of control");
+            Collection<AddinDescriptor> children = AddinDescriptor.GetDependencies(descriptor.Owner.FullPath);
+            if (children == null) return;
+            AddinDescriptor temp = null;
+            IService s = null;
+            for (Int32 i = 0; i < children.Count; i++)
+            {
+                temp = children[i];
+                if (temp.BuildState != AddinBuildState.Build)
+                {
+                    continue;
+                }
+                s = temp.Addin as IService;
+                if (s != null && s.State == ServiceState.Runing)
+                {
+                    s.Stop();
+                }
+            }
         }
 
         #endregion

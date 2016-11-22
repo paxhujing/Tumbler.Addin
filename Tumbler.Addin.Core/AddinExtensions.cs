@@ -125,5 +125,14 @@ namespace Tumbler.Addin.Core
         {
             return AddinManager.Instance.GetFullPath(addin);
         }
+
+        /// <summary>
+        /// 停止依赖该服务的其它服务。
+        /// </summary>
+        /// <param name="service">主服务。</param>
+        public static void StopDependencies(this IService service)
+        {
+            AddinManager.Instance.StopDependencies(service);
+        }
     }
 }
