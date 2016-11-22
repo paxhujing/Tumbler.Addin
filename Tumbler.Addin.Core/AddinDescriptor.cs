@@ -82,28 +82,6 @@ namespace Tumbler.Addin.Core
         /// </summary>
         public AddinBuildState BuildState { get; private set; }
 
-        #region AddinState
-
-        private AddinState _addinState;
-
-        /// <summary>
-        /// 获取插件的状态。
-        /// </summary>
-        public AddinState AddinState
-        {
-            get { return _addinState; }
-            internal set
-            {
-                if (_addinState != value)
-                {
-                    _addinState = value;
-                    OnStateChanged(value);
-                }
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Methods
@@ -165,16 +143,6 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 解析依赖，加载程序集和类型。
-        /// </summary>
-        private void Analysis()
-        {
-            AnalysisAssemblies();
-            BuildDependencies();
-            BuildState = AddinBuildState.NotBuild;
-        }
-
-        /// <summary>
         /// 构建插件。
         /// </summary>
         /// <returns>代表了插件的对象，例如一个UI元素。</returns>
@@ -217,6 +185,16 @@ namespace Tumbler.Addin.Core
         #endregion
 
         #region Private
+
+        /// <summary>
+        /// 解析依赖，加载程序集和类型。
+        /// </summary>
+        private void Analysis()
+        {
+            AnalysisAssemblies();
+            BuildDependencies();
+            BuildState = AddinBuildState.NotBuild;
+        }
 
         /// <summary>
         /// 创建插件实例。
@@ -367,10 +345,19 @@ namespace Tumbler.Addin.Core
         private void InitializeAddinState()
         {
             if (Dependencies == null) return;
-            AddinState state = AddinState.Unknow;
+            AddinState state;
+            AddinNode node = null;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
-                state = AddinManager.Instance.GetAddinState(Dependencies[i]);
+                node = AddinManager.Instance.GetNode(Dependencies[i]) as AddinNode;
+                if (node == null)
+                {
+                    state = AddinState.Unknow;
+                }
+                else
+                {
+                    state = node.Descriptor.IsValueCreated ? node.Descriptor.Value.Addin.State : AddinState.Unknow;
+                }
                 Addin.OnDependencyStateChanged(Dependencies[i], state);
             }
         }
@@ -384,26 +371,6 @@ namespace Tumbler.Addin.Core
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
                 AddinDescriptor.DepdencieTable.Remove(Dependencies[i]);
-            }
-        }
-
-        /// <summary>
-        /// 状态改变时执行。
-        /// </summary>
-        /// <param name="newState">新状态。</param>
-        private void OnStateChanged(AddinState newState)
-        {
-            String fullPath = this.Owner.FullPath;
-            if(DepdencieTable.ContainsKey(fullPath))
-            {
-                Collection<AddinDescriptor> targets = DepdencieTable[fullPath];
-                foreach(AddinDescriptor target in targets)
-                {
-                    if(target.BuildState == AddinBuildState.Build)
-                    {
-                        target.Addin.OnDependencyStateChanged(fullPath, newState);
-                    }
-                }
             }
         }
 

@@ -169,24 +169,6 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 获取指定路径的插件状态。
-        /// </summary>
-        /// <param name="fullPath">插件所在完整路径。</param>
-        /// <returns>插件状态。</returns>
-        public AddinState GetAddinState(String fullPath)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinTreeNode node = GetNode(fullPath);
-            if (node == null || node.IsVirtual) return AddinState.Unknow;
-            AddinNode addinNode = (AddinNode)node;
-            if(addinNode.Descriptor.IsValueCreated)
-            {
-                return addinNode.Descriptor.Value.AddinState;
-            }
-            return AddinState.Unknow;
-        }
-
-        /// <summary>
         /// 获取指定路径的插件树节点。
         /// </summary>
         /// <param name="fullPath">路径。</param>
@@ -329,19 +311,6 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 获取插件的状态。
-        /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <returns>插件状态。</returns>
-        internal AddinState GetAddinState(IAddin addin)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) return AddinState.Unknow;
-            return descriptor.AddinState;
-        }
-
-        /// <summary>
         /// 获取插件挂载的完整路径。
         /// </summary>
         /// <param name="addin">插件。</param>
@@ -394,18 +363,23 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 设置插件的状态。
+        /// 通知插件状态已经改变。
         /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <param name="state">状态。</param>
-        /// <returns>设置成功返回true；否则返回false。</returns>
-        internal Boolean SetAddinState(IAddin addin, AddinState state)
+        /// <param name="addin">状态改变的插件。</param>
+        internal void NotifyStateChanged(IAddin addin)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
-            if (descriptor == null) return false;
-            descriptor.AddinState = state;
-            return true;
+            String fullPath = descriptor.Owner.FullPath;
+            Collection<AddinDescriptor> descriptors = AddinDescriptor.GetDependencies(fullPath);
+            if (descriptors == null || descriptors.Count == 0) return;
+            for (Int32 i = 0; i < descriptors.Count; i++)
+            {
+                if (descriptors[i].BuildState == AddinBuildState.Build)
+                {
+                    descriptors[i].Addin.OnDependencyStateChanged(fullPath, addin.State);
+                }
+            }
         }
 
         /// <summary>
@@ -429,7 +403,7 @@ namespace Tumbler.Addin.Core
                     continue;
                 }
                 s = temp.Addin as IService;
-                if (s != null && s.State == ServiceState.Runing)
+                if (s != null && s.State == AddinState.IncludeOrRuning)
                 {
                     s.Stop();
                 }

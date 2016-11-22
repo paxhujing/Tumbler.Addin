@@ -13,24 +13,12 @@ namespace Tumbler.Addin.Core
     public static class AddinExtensions
     {
         /// <summary>
-        /// 设置插件状态。
+        /// 通知插件状态已经改变。
         /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <param name="state">状态。</param>
-        /// <returns>设置成功返回true；否则返回false。</returns>
-        public static Boolean SetState(this IAddin addin, AddinState state)
+        /// <param name="addin">状态改变的插件。</param>
+        public static void NotifyStateChanged(this IAddin addin)
         {
-            return AddinManager.Instance.SetAddinState(addin, state);
-        }
-
-        /// <summary>
-        /// 获取插件状态。
-        /// </summary>
-        /// <param name="addin">插件。</param>
-        /// <returns>插件状态。</returns>
-        public static AddinState GetState(this IAddin addin)
-        {
-            return AddinManager.Instance.GetAddinState(addin);
+            AddinManager.Instance.NotifyStateChanged(addin);
         }
 
         /// <summary>

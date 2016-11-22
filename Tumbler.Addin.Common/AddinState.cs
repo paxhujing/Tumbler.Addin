@@ -24,12 +24,12 @@ namespace Tumbler.Addin.Common
         /// </summary>
         Disable,
         /// <summary>
-        /// 不可见或不可执行。
+        /// 不可见或不可执行或服务停止。
         /// </summary>
-        Exclude,
+        ExcludeOrStop,
         /// <summary>
-        /// 可见或可执行。
+        /// 可见或可执行或服务启动。
         /// </summary>
-        Include,
+        IncludeOrRuning,
     }
 }

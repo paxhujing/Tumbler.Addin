@@ -11,6 +11,15 @@ namespace Tumbler.Addin.Common
     /// </summary>
     public interface IAddin : IDisposable
     {
+        #region Properties
+
+        /// <summary>
+        /// 获取插件状态。
+        /// </summary>
+        AddinState State { get; }
+
+        #endregion
+
         #region Methods
 
         /// <summary>
@@ -21,7 +30,7 @@ namespace Tumbler.Addin.Common
         /// <summary>
         /// 执行插件提供的功能。
         /// </summary>
-        void Execute();
+        void Execute(params Object[] args);
 
         /// <summary>
         /// 依赖的插件状态改变时执行。
