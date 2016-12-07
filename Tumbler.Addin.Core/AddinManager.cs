@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +32,16 @@ namespace Tumbler.Addin.Core
         private readonly Dictionary<String, AddinTreeNode> _nodes = new Dictionary<string, AddinTreeNode>();
 
         private Boolean _isInit;
+
+        private Queue<MessageArgs> _messageQueue;
+
+        private Task _messageDispatcher;
+
+        private CancellationTokenSource _syncEvent;
+
+        private MethodInfo _mi;
+
+        private readonly Object _syncObj = new Object();
 
         #endregion
 
@@ -194,60 +207,27 @@ namespace Tumbler.Addin.Core
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="fullPath">目标插件的完整路径。</param>
-        /// <param name="content">消息内容。</param>
-        /// <param name="isAsync">是否异步处理消息。</param>
-        internal void SendMessage(Object sender, String fullPath, Object content, Boolean isAsync = false)
-        {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinNode node = GetNode(fullPath) as AddinNode;
-            if (node == null) return;
-            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
-            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
-            {
-                IHandler handler = descriptor.Addin as IHandler;
-                if (handler == null) return;
-                if (!isAsync)
-                {
-                    handler.Handle(new MessageArgs(sender, fullPath, content));
-                }
-                else
-                {
-                    ThreadPool.QueueUserWorkItem(o =>
-                    {
-                        handler.Handle(new MessageArgs(sender, fullPath, content));
-                    });
-                }
-            }
-        }
-
-        /// <summary>
-        /// 向其它插件发送消息。
-        /// </summary>
-        /// <param name="sender">发送者。</param>
-        /// <param name="fullPath">目标插件的完整路径。</param>
         /// <param name="content">消息。</param>
         /// <param name="isAsync">是否异步处理消息。</param>
         internal void SendMessage<TContent>(Object sender, String fullPath, TContent content, Boolean isAsync = false)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinNode node = GetNode(fullPath) as AddinNode;
-            if (node == null) return;
-            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
-            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+            MessageArgs<TContent> message = new MessageArgs<TContent>(sender, fullPath, content);
+            if (isAsync)
             {
-                IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
-                if (handler == null) return;
-                if (!isAsync) 
+                lock (_syncObj)
                 {
-                     handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
-                }
-                else
-                {
-                    ThreadPool.QueueUserWorkItem(o =>
+                    if (_messageQueue == null) InitMessageDispatcher();
+                    message.IsAsync = true;
+                    _messageQueue.Enqueue(message);
+                    if (_messageQueue.Count == 1)
                     {
-                        handler.Handle(new MessageArgs<TContent>(sender, fullPath, content));
-                    });
+                        ((ManualResetEvent)_syncEvent.Token.WaitHandle).Set();
+                    }
                 }
+            }
+            else
+            {
+                SendMessageImpl<TContent> (message);
             }
         }
 
@@ -415,6 +395,35 @@ namespace Tumbler.Addin.Core
         #region Private
 
         /// <summary>
+        /// 向其它插件发送消息。
+        /// </summary>
+        /// <param name="message">消息。</param>
+        private void SendMessageImpl<TContent>(MessageArgs<TContent> message)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinNode node = GetNode(message.Destination) as AddinNode;
+            if (node == null) return;
+            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+            {
+                IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
+                if (handler == null) return;
+                handler.Handle(message);
+            }
+        }
+
+        /// <summary>
+        /// 初始化消息调度器。
+        /// </summary>
+        private void InitMessageDispatcher()
+        {
+            _mi = this.GetType().GetMethod("SendMessageImpl", BindingFlags.NonPublic | BindingFlags.Instance);
+            _messageQueue = new Queue<MessageArgs>();
+            _syncEvent = new CancellationTokenSource();
+            Task.Factory.StartNew(DispatchMessage, _syncEvent.Token);
+        }
+
+        /// <summary>
         /// 卸载插件核心方法。
         /// </summary>
         /// <param name="addinConfigFile">插件配置文件。</param>
@@ -561,6 +570,29 @@ namespace Tumbler.Addin.Core
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 调度消息。
+        /// </summary>
+        private void DispatchMessage(Object state)
+        {
+            CancellationToken token = (CancellationToken)state;
+            ManualResetEvent syncEvent = (ManualResetEvent)token.WaitHandle;
+            MessageArgs message = null;
+            while (!token.IsCancellationRequested)
+            {
+                syncEvent.WaitOne();
+                lock (_syncObj)
+                {
+                    message = _messageQueue.Dequeue();
+                    if (_messageQueue.Count == 0)
+                    {
+                        syncEvent.Reset();
+                    }
+                }
+                _mi.MakeGenericMethod(message.Content.GetType()).Invoke(this, new Object[] { message });
             }
         }
 

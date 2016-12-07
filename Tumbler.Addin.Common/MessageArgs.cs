@@ -41,6 +41,11 @@ namespace Tumbler.Addin.Common
         /// </summary>
         public Object Content { get; }
 
+        /// <summary>
+        /// 是否是异步消息。
+        /// </summary>
+        public Boolean IsAsync { get; set; }
+
         #endregion
     }
 
