@@ -107,7 +107,7 @@ namespace Tumbler.Addin.Core
         public IEnumerable<AddinBaseInfo> GetInstallAddinInfos()
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            return _nodes.Values.Skip(3).Where(x=>!x.IsVirtual).Cast<AddinNode>().Select(x=>x.Info);
+            return _nodes.Values.Skip(3).OfType<AddinNode>().Select(x => x.Info);
         }
 
         /// <summary>
@@ -266,6 +266,20 @@ namespace Tumbler.Addin.Core
             IList<IAddin> addins = new List<IAddin>();
             BuildImpl(descriptor.Owner, ref addins);
             return addins.ToArray();
+        }
+
+        /// <summary>
+        /// 获取插件的子插件列表。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>子插件列表。</returns>
+        internal IAddin[] GetChildAddins(IAddin addin)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
+            String[] exposes = descriptor.Owner.Exposes;
+            return GetChildsImpl(descriptor.Owner);
         }
 
         /// <summary>
@@ -545,7 +559,7 @@ namespace Tumbler.Addin.Core
         /// </summary>
         /// <param name="node">节点。</param>
         /// <param name="addins">构建完成的插件。</param>
-        private void BuildImpl(AddinTreeNode node,ref IList<IAddin> addins)
+        private void BuildImpl(AddinTreeNode node, ref IList<IAddin> addins)
         {
             ReadOnlyCollection<AddinTreeNode> items = null;
             if (node.Exposes == null) return;
@@ -571,6 +585,34 @@ namespace Tumbler.Addin.Core
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取节点的子插件实例。
+        /// </summary>
+        /// <param name="node">节点。</param>
+        /// <returns>子节点列表。</returns>
+        private IAddin[] GetChildsImpl(AddinTreeNode node)
+        {
+            ReadOnlyCollection<AddinTreeNode> items = null;
+            if (node.IsVirtual || node.Exposes == null) return new IAddin[0];
+            IList<IAddin> addins = new List<IAddin>();
+            Lazy<AddinDescriptor> temp = null;
+            foreach (String expose in node.Exposes)
+            {
+                items = node.GetChilds(expose);
+                if (items == null) continue;
+                foreach (AddinTreeNode item in items)
+                {
+                    if (item.IsVirtual) continue;
+                    temp = ((AddinNode)item).Descriptor;
+                    if (temp.IsValueCreated && temp.Value.BuildState == AddinBuildState.Build)
+                    {
+                        addins.Add(temp.Value.Addin);
+                    }
+                }
+            }
+            return addins.ToArray();
         }
 
         /// <summary>

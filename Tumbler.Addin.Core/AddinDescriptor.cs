@@ -18,7 +18,7 @@ namespace Tumbler.Addin.Core
     {
         #region Fields
 
-        private static readonly Dictionary<IAddin, AddinDescriptor> AddinsDescriptor = new Dictionary<IAddin, AddinDescriptor>();
+        private static readonly Dictionary<IAddin, AddinDescriptor> AddinDescriptors = new Dictionary<IAddin, AddinDescriptor>();
 
         private static readonly Dictionary<String, Collection<AddinDescriptor>> DepdencieTable = new Dictionary<String, Collection<AddinDescriptor>>();
 
@@ -95,9 +95,9 @@ namespace Tumbler.Addin.Core
         /// <returns>插件的描述器。</returns>
         public static AddinDescriptor FindAddinDescriptor(IAddin addin)
         {
-            if (AddinsDescriptor.ContainsKey(addin))
+            if (AddinDescriptors.ContainsKey(addin))
             {
-                return AddinsDescriptor[addin];
+                return AddinDescriptors[addin];
             }
             return null;
         }
@@ -175,7 +175,7 @@ namespace Tumbler.Addin.Core
             if (BuildState == AddinBuildState.Build)
             {
                 RemoveDependencies();
-                AddinsDescriptor.Remove(Addin);
+                AddinDescriptors.Remove(Addin);
                 Addin.Dispose();
                 Addin = null;
                 BuildState = AddinBuildState.NotBuild;
@@ -204,7 +204,7 @@ namespace Tumbler.Addin.Core
         {
             IAddin addin = (IAddin)Activator.CreateInstance(_type);
             addin.Initialize();
-            AddinsDescriptor.Add(addin, this);
+            AddinDescriptors.Add(addin, this);
             Addin = addin;
             InitializeAddinState();
             BuildState = AddinBuildState.Build;

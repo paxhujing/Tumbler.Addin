@@ -55,6 +55,16 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 获取插件的子插件列表。
+        /// </summary>
+        /// <param name="addin">插件。</param>
+        /// <returns>子插件列表。</returns>
+        public static IAddin[] GetChildAddins(this IAddin addin)
+        {
+            return AddinManager.Instance.GetChildAddins(addin);
+        }
+
+        /// <summary>
         /// 构建指定插件的下一级插件列表。
         /// </summary>
         /// <param name="addin">下一级插件的父级插件。</param>
