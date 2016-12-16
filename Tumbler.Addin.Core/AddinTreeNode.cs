@@ -9,7 +9,7 @@ namespace Tumbler.Addin.Core
 {
     /// <summary>
     /// 插件树节点。
-    /// </summary>
+    /// </summary>TryGetMount
     public abstract class AddinTreeNode
     {
         #region Fields
@@ -209,10 +209,10 @@ namespace Tumbler.Addin.Core
                 if (items[i] == expose)
                 {
                     mount = $"{FullPath}/{expose}";
-                    break;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
         /// <summary>
