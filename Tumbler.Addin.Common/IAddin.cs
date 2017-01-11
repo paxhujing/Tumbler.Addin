@@ -39,6 +39,14 @@ namespace Tumbler.Addin.Common
         /// <param name="state">改变后的状态。</param>
         void OnDependencyStateChanged(String fullPath, AddinState state);
 
+        /// <summary>
+        /// 数据改变时执行。
+        /// </summary>
+        /// <param name="fullPath">依赖的插件的完整路径。</param>
+        /// <param name="newData">新数据。</param>
+        /// <param name="oldData">旧数据。</param>
+        void OnDataChanged(String fullPath, Object newData, Object oldData);
+
         #endregion
     }
 }

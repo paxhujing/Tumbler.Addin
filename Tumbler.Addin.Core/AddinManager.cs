@@ -377,6 +377,28 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 通知插件数据已经改变。
+        /// </summary>
+        /// <param name="addin">状态改变的插件。</param>
+        /// <param name="newData">新数据。</param>
+        /// <param name="oldData">旧数据。</param>
+        internal void NotifyDataChanged(IAddin addin,Object newData,Object oldData)
+        {
+            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
+            String fullPath = descriptor.Owner.FullPath;
+            Collection<AddinDescriptor> descriptors = AddinDescriptor.GetDependencies(fullPath);
+            if (descriptors == null || descriptors.Count == 0) return;
+            for (Int32 i = 0; i < descriptors.Count; i++)
+            {
+                if (descriptors[i].BuildState == AddinBuildState.Build)
+                {
+                    descriptors[i].Addin.OnDataChanged(fullPath, newData, oldData);
+                }
+            }
+        }
+
+        /// <summary>
         /// 停止依赖该服务的其它服务。
         /// </summary>
         /// <param name="service">主服务。</param>
