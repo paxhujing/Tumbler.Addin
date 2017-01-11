@@ -25,11 +25,12 @@ namespace Tumbler.Addin.Core
         /// 通知插件状态已经改变。
         /// </summary>
         /// <param name="addin">状态改变的插件。</param>
+        /// <param name="name">数据名称。</param>
         /// <param name="newData">新数据。</param>
         /// <param name="oldData">旧数据。</param>
-        public static void NotifyDataChanged(this IAddin addin, Object newData, Object oldData)
+        public static void NotifyDataChanged(this IAddin addin, String name, Object newData, Object oldData)
         {
-            AddinManager.Instance.NotifyDataChanged(addin, newData, oldData);
+            AddinManager.Instance.NotifyDataChanged(addin, name, newData, oldData);
         }
 
         /// <summary>

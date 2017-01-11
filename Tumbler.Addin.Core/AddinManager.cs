@@ -380,9 +380,10 @@ namespace Tumbler.Addin.Core
         /// 通知插件数据已经改变。
         /// </summary>
         /// <param name="addin">状态改变的插件。</param>
+        /// <param name="name">数据名称。</param>
         /// <param name="newData">新数据。</param>
         /// <param name="oldData">旧数据。</param>
-        internal void NotifyDataChanged(IAddin addin,Object newData,Object oldData)
+        internal void NotifyDataChanged(IAddin addin, String name, Object newData, Object oldData)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
@@ -393,7 +394,7 @@ namespace Tumbler.Addin.Core
             {
                 if (descriptors[i].BuildState == AddinBuildState.Build)
                 {
-                    descriptors[i].Addin.OnDataChanged(fullPath, newData, oldData);
+                    descriptors[i].Addin.OnDataChanged(fullPath, name, newData, oldData);
                 }
             }
         }

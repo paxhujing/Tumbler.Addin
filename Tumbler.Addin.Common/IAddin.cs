@@ -43,9 +43,10 @@ namespace Tumbler.Addin.Common
         /// 数据改变时执行。
         /// </summary>
         /// <param name="fullPath">依赖的插件的完整路径。</param>
+        /// <param name="name">数据名称。</param>
         /// <param name="newData">新数据。</param>
         /// <param name="oldData">旧数据。</param>
-        void OnDataChanged(String fullPath, Object newData, Object oldData);
+        void OnDataChanged(String fullPath,String name, Object newData, Object oldData);
 
         #endregion
     }
