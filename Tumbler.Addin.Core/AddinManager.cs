@@ -184,16 +184,23 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取指定路径的插件树节点。
         /// </summary>
-        /// <param name="fullPath">路径。</param>
+        /// <param name="fullPath">路径。如果为“*”表示所有插件。</param>
         /// <returns>插件树节点。</returns>
-        public AddinTreeNode GetNode(String fullPath)
+        public IEnumerable<AddinTreeNode> GetNode(String fullPath)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             if (String.IsNullOrWhiteSpace(fullPath)) return null;
-            fullPath = AddinTreeNode.CompletePath(fullPath);
-            if (_nodes.ContainsKey(fullPath))
+            if (fullPath == "*")
             {
-                return _nodes[fullPath];
+                return _nodes.Values;
+            }
+            else
+            {
+                fullPath = AddinTreeNode.CompletePath(fullPath);
+                if (_nodes.ContainsKey(fullPath))
+                {
+                    return new AddinTreeNode[] { _nodes[fullPath] };
+                }
             }
             return null;
         }
@@ -438,14 +445,18 @@ namespace Tumbler.Addin.Core
         private void SendMessageImpl<TContent>(MessageArgs<TContent> message)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            AddinNode node = GetNode(message.Destination) as AddinNode;
-            if (node == null) return;
-            AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
-            if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+            IEnumerable<AddinNode> nodes = GetNode(message.Destination).OfType<AddinNode>();
+            if (nodes == null) return;
+            foreach (AddinNode node in nodes)
             {
-                IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
-                if (handler == null) return;
-                handler.Handle(message);
+                if (node == message.Sender) continue;
+                AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+                if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+                {
+                    IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
+                    if (handler == null) return;
+                    handler.Handle(message);
+                }
             }
         }
 

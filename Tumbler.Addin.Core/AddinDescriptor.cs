@@ -218,13 +218,12 @@ namespace Tumbler.Addin.Core
         {
             if (Dependencies == null) return;
             Collection<String> unresoles = new Collection<String>();
-            AddinTreeNode node = null;
             String dependency = null;
             for (Int32 i = 0; i < Dependencies.Length; i++)
             {
                 dependency = Dependencies[i];
-                node = AddinManager.Instance.GetNode(dependency);
-                if (node == null)
+                IEnumerable<AddinTreeNode> nodes = AddinManager.Instance.GetNode(dependency);
+                if (nodes == null)
                 {
                     unresoles.Add(dependency);
                 }
