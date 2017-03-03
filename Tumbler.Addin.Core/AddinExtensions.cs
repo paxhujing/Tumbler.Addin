@@ -34,7 +34,7 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件（包括宿主）发送消息。
+        /// 向其它插件（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="content">消息内容。</param>
@@ -45,7 +45,7 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件发送消息。
+        /// 向其它插件（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="fullPath">目标插件的完整路径。</param>
@@ -57,7 +57,7 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件（包括宿主）发送消息。
+        /// 向其它插件（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="content">消息内容。</param>
@@ -68,18 +68,18 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向宿主发送消息。
+        /// 向宿主（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="content">消息内容。</param>
         /// <param name="isAsync">是否异步处理消息。</param>
-        public static void SendMessageToHost(this Object sender, KeyValuePair<Byte, Object> content, Boolean isAsync = false)
+        public static void SendMessageToHost(this Object sender, KeyValuePair<Int32, Object> content, Boolean isAsync = false)
         {
             AddinManager.Instance.SendMessage(sender, AddinManager.HostTarget, content, isAsync);
         }
 
         /// <summary>
-        /// 向其它插件发送消息。
+        /// 向其它插件（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="fullPath">目标插件的完整路径。</param>

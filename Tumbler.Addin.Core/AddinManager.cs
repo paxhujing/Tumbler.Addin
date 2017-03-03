@@ -35,8 +35,6 @@ namespace Tumbler.Addin.Core
 
         private Queue<MessageArgs> _messageQueue;
 
-        private Task _messageDispatcher;
-
         private CancellationTokenSource _syncEvent;
 
         private MethodInfo _mi;
@@ -454,7 +452,7 @@ namespace Tumbler.Addin.Core
         private void SendMessageImpl<TContent>(MessageArgs<TContent> message)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            if (message.Destination == HostTarget)
+            if (message.Sender != _host && message.Destination == HostTarget)
             {
                 _host.OnReceived(message);
             }
@@ -473,7 +471,6 @@ namespace Tumbler.Addin.Core
                         handler.Handle(message);
                     }
                 }
-                if(message.Destination == AllTargets) _host.OnReceived(message);
             }
         }
 
@@ -485,7 +482,7 @@ namespace Tumbler.Addin.Core
             _mi = this.GetType().GetMethod("SendMessageImpl", BindingFlags.NonPublic | BindingFlags.Instance);
             _messageQueue = new Queue<MessageArgs>();
             _syncEvent = new CancellationTokenSource();
-            Task.Factory.StartNew(DispatchMessage, _syncEvent.Token);
+            Task.Factory.StartNew(DispatchMessage, _syncEvent.Token, TaskCreationOptions.LongRunning);
         }
 
         /// <summary>
