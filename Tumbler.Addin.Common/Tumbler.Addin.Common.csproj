@@ -46,6 +46,7 @@
     <Compile Include="AddinBaseInfo.cs" />
     <Compile Include="AddinState.cs" />
     <Compile Include="IAddin.cs" />
+    <Compile Include="IAddinHost.cs" />
     <Compile Include="IHandler.cs" />
     <Compile Include="IService.cs" />
     <Compile Include="MessageArgs.cs" />

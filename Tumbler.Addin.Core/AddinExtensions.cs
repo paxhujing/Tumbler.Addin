@@ -41,7 +41,7 @@ namespace Tumbler.Addin.Core
         /// <param name="isAsync">是否异步处理消息。</param>
         public static void SendMessageToAll(this Object sender, Object content, Boolean isAsync = false)
         {
-            AddinManager.Instance.SendMessage(sender, "*", content, isAsync);
+            AddinManager.Instance.SendMessage(sender, AddinManager.AllTargets, content, isAsync);
         }
 
         /// <summary>
@@ -64,7 +64,18 @@ namespace Tumbler.Addin.Core
         /// <param name="isAsync">是否异步处理消息。</param>
         public static void SendMessageToAll<TCotnent>(this Object sender, TCotnent content, Boolean isAsync = false)
         {
-            AddinManager.Instance.SendMessage<TCotnent>(sender, "*", content, isAsync);
+            AddinManager.Instance.SendMessage<TCotnent>(sender, AddinManager.AllTargets, content, isAsync);
+        }
+
+        /// <summary>
+        /// 向宿主发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="content">消息内容。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        public static void SendMessageToHost(this Object sender, KeyValuePair<Byte, Object> content, Boolean isAsync = false)
+        {
+            AddinManager.Instance.SendMessage(sender, AddinManager.HostTarget, content, isAsync);
         }
 
         /// <summary>

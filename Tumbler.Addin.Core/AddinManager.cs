@@ -43,6 +43,12 @@ namespace Tumbler.Addin.Core
 
         private readonly Object _syncObj = new Object();
 
+        internal const String AllTargets = "*";
+
+        internal const String HostTarget = ".";
+
+        private IAddinHost _host;
+
         #endregion
 
         #region Constructors
@@ -82,11 +88,14 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 初始化插件管理器。
         /// </summary>
+        /// <param name="host">宿主。</param>
         /// <param name="configFile">配置文件。</param>
         /// <param name="initExposes">初始化挂载点。</param>
-        public void Initialize(String configFile, Tuple<String, String, String[]>[] initExposes = null)
+        public void Initialize(IAddinHost host, String configFile, Tuple<String, String, String[]>[] initExposes = null)
         {
             if (_isInit) return;
+            if (host == null) throw new ArgumentNullException("host");
+            _host = host;
             if (String.IsNullOrWhiteSpace(configFile)) throw new ArgumentNullException("configFile");
             configFile = AddinManager.GetFileFullPath(configFile);
             if (!File.Exists(configFile)) throw new FileNotFoundException(configFile);
@@ -190,7 +199,7 @@ namespace Tumbler.Addin.Core
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             if (String.IsNullOrWhiteSpace(fullPath)) return null;
-            if (fullPath == "*")
+            if (fullPath == AllTargets)
             {
                 return _nodes.Values;
             }
@@ -445,17 +454,24 @@ namespace Tumbler.Addin.Core
         private void SendMessageImpl<TContent>(MessageArgs<TContent> message)
         {
             if (!_isInit) throw new InvalidOperationException("Need initialize");
-            IEnumerable<AddinNode> nodes = GetNode(message.Destination).OfType<AddinNode>();
-            if (nodes == null) return;
-            foreach (AddinNode node in nodes)
+            if (message.Destination == HostTarget)
             {
-                if (node == message.Sender) continue;
-                AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
-                if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+                _host.OnReceived(message);
+            }
+            else
+            {
+                IEnumerable<AddinNode> nodes = GetNode(message.Destination).OfType<AddinNode>();
+                if (nodes == null) return;
+                foreach (AddinNode node in nodes)
                 {
-                    IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
-                    if (handler == null) return;
-                    handler.Handle(message);
+                    if (node == message.Sender) continue;
+                    AddinDescriptor descriptor = node.Descriptor.IsValueCreated ? node.Descriptor.Value : null;
+                    if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
+                    {
+                        IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
+                        if (handler == null) return;
+                        handler.Handle(message);
+                    }
                 }
             }
         }
@@ -668,6 +684,7 @@ namespace Tumbler.Addin.Core
                         syncEvent.Reset();
                     }
                 }
+
                 _mi.MakeGenericMethod(message.Content.GetType()).Invoke(this, new Object[] { message });
             }
         }
