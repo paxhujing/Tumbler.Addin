@@ -34,7 +34,7 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件发送消息。
+        /// 向其它插件（包括宿主）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="content">消息内容。</param>
@@ -57,7 +57,7 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
-        /// 向其它插件发送消息。
+        /// 向其它插件（包括宿主）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
         /// <param name="content">消息内容。</param>

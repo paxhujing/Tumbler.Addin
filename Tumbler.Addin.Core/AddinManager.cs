@@ -473,6 +473,7 @@ namespace Tumbler.Addin.Core
                         handler.Handle(message);
                     }
                 }
+                if(message.Destination == AllTargets) _host.OnReceived(message);
             }
         }
 
