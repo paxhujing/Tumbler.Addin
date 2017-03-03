@@ -469,7 +469,7 @@ namespace Tumbler.Addin.Core
                     if (descriptor != null && descriptor.BuildState == AddinBuildState.Build)
                     {
                         IHandler<TContent> handler = descriptor.Addin as IHandler<TContent>;
-                        if (handler == null) return;
+                        if (handler == null) continue;
                         handler.Handle(message);
                     }
                 }
