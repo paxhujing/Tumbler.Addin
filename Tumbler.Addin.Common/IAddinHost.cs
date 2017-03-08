@@ -5,14 +5,10 @@
     /// </summary>
     public interface IAddinHost
     {
-        #region Methods
-
         /// <summary>
         /// 收到消息。
         /// </summary>
         /// <param name="message">消息。</param>
-        void OnReceived(MessageArgs message);
-
-        #endregion
+        void OnReceive(MessageArgs message);
     }
 }

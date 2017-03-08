@@ -9,7 +9,7 @@ namespace Tumbler.Addin.Common
     /// <summary>
     /// 表示一个插件。
     /// </summary>
-    public interface IAddin : IDisposable
+    public interface IAddin :  IDisposable
     {
         #region Properties
 
@@ -46,7 +46,7 @@ namespace Tumbler.Addin.Common
         /// <param name="name">数据名称。</param>
         /// <param name="newData">新数据。</param>
         /// <param name="oldData">旧数据。</param>
-        void OnDataChanged(String fullPath,String name, Object newData, Object oldData);
+        void OnDataChanged(String fullPath, String name, Object newData, Object oldData);
 
         #endregion
     }

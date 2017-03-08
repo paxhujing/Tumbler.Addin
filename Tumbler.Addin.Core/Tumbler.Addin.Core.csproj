@@ -51,6 +51,8 @@
     <Compile Include="AddinNode.cs" />
     <Compile Include="AddinTreeNode.cs" />
     <Compile Include="AddinAttributeException.cs" />
+    <Compile Include="IStateSupported.cs" />
+    <Compile Include="StateManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RootNode.cs" />
     <Compile Include="VirtualNode.cs" />

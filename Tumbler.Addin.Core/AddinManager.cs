@@ -41,9 +41,15 @@ namespace Tumbler.Addin.Core
 
         private readonly Object _syncObj = new Object();
 
-        internal const String AllTargets = "*";
+        /// <summary>
+        /// 所有目标对象。
+        /// </summary>
+        public const String AllTargets = "*";
 
-        internal const String HostTarget = ".";
+        /// <summary>
+        /// 宿主目标对象。
+        /// </summary>
+        public const String HostTarget = ".";
 
         private IAddinHost _host;
 
@@ -332,6 +338,19 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 获取目标对象挂载的完整路径。
+        /// </summary>
+        /// <param name="target">目标对象。</param>
+        /// <returns>挂载的完整路径。</returns>
+        internal String GetFullPath(Object target)
+        {
+            if (target == _host) return HostTarget;
+            IAddin addin = target as IAddin;
+            if (addin == null) return null;
+            return GetFullPath(addin);
+        }
+
+        /// <summary>
         /// 获取插件的挂载路径。
         /// </summary>
         /// <param name="addin">插件。</param>
@@ -454,7 +473,7 @@ namespace Tumbler.Addin.Core
             if (!_isInit) throw new InvalidOperationException("Need initialize");
             if (message.Sender != _host && message.Destination == HostTarget)
             {
-                _host.OnReceived(message);
+                _host.OnReceive(message);
             }
             else
             {

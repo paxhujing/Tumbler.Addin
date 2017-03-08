@@ -170,6 +170,16 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 获取目标对象挂载的完整路径。
+        /// </summary>
+        /// <param name="target">目标对象。</param>
+        /// <returns>挂载的完整路径。</returns>
+        public static String GetFullPath(this Object target)
+        {
+            return AddinManager.Instance.GetFullPath(target);
+        }
+
+        /// <summary>
         /// 停止依赖该服务的其它服务。
         /// </summary>
         /// <param name="service">主服务。</param>
