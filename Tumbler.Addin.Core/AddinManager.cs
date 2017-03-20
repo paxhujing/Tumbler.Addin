@@ -81,7 +81,7 @@ namespace Tumbler.Addin.Core
         /// <summary>
         /// 获取或设置过滤器。过滤器用于根据指定条件筛选符合要求的插件。
         /// </summary>
-        public Func<XElement,Boolean> Filter { get; set; }
+        public Func<AddinNode, Boolean> Filter { get; set; }
 
         #endregion
 
@@ -535,30 +535,28 @@ namespace Tumbler.Addin.Core
             AddinTreeNode node = null;
             if (initExposes != null && initExposes.Length != 0)
             {
-                foreach(Tuple<String, String, String[]> point in initExposes)
+                foreach (Tuple<String, String, String[]> point in initExposes)
                 {
                     node = new VirtualNode(point.Item1, AddinTreeNode.DefaultExposePoint, point.Item2, point.Item3);
                     _nodes.Add(node.FullPath, node);
                 }
             }
-            Func<XElement, Boolean> filter = Filter;
-            IEnumerable<XElement> loadList = null;
-            if (filter != null)
-            {
-                loadList = xml.Elements("Addin").Where(filter);
-            }
-            else
-            {
-                loadList = xml.Elements("Addin");
-            }
+            IEnumerable<XElement> loadList = xml.Elements("Addin");
+            Func<AddinNode, Boolean> filter = Filter?? DefaultFilter;
             foreach (XElement element in loadList)
             {
                 node = GetAddinTreeNode(element);
+                if (!node.IsVirtual && !filter((AddinNode)node)) continue;
                 if (node != null && !_nodes.ContainsKey(node.FullPath))
                 {
                     _nodes.Add(node.FullPath, node);
                 }
             }
+        }
+
+        private static Boolean DefaultFilter(AddinNode node)
+        {
+            return true;
         }
 
         /// <summary>

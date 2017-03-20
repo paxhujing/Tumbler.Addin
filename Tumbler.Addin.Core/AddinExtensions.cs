@@ -79,6 +79,19 @@ namespace Tumbler.Addin.Core
         }
 
         /// <summary>
+        /// 向宿主（除自己）发送消息。
+        /// </summary>
+        /// <param name="sender">发送者。</param>
+        /// <param name="action">动作。</param>
+        /// <param name="content">消息内容。</param>
+        /// <param name="isAsync">是否异步处理消息。</param>
+        public static void SendMessageToHost(this Object sender, Int32 action, Object content, Boolean isAsync = false)
+        {
+            AddinManager.Instance.SendMessage(sender, AddinManager.HostTarget, new KeyValuePair<Int32, Object>(action, content), isAsync);
+        }
+
+
+        /// <summary>
         /// 向其它插件（除自己）发送消息。
         /// </summary>
         /// <param name="sender">发送者。</param>
