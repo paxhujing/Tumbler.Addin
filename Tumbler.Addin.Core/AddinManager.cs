@@ -119,7 +119,7 @@ namespace Tumbler.Addin.Core
         /// <returns>已安装插件的信息列表。</returns>
         public IEnumerable<AddinBaseInfo> GetInstallAddinInfos()
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             return _nodes.Values.Skip(3).OfType<AddinNode>().Select(x => x.Info);
         }
 
@@ -129,7 +129,7 @@ namespace Tumbler.Addin.Core
         /// <returns>第一级的所有插件列表。</returns>
         public IAddin[] BuildFirstLevelAddins()
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             IList<IAddin> addins = new List<IAddin>();
             BuildImpl(_root.GetChilds()[0], ref addins);
             return addins.ToArray();
@@ -141,7 +141,7 @@ namespace Tumbler.Addin.Core
         /// <returns>第一级的所有服务列表。</returns>
         public IService[] BuildFirstLevelServices()
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             IList<IAddin> addins = new List<IAddin>();
             BuildImpl(_root.GetChilds()[1], ref addins);
             return addins.Cast<IService>().ToArray();
@@ -153,7 +153,7 @@ namespace Tumbler.Addin.Core
         /// <param name="addinConfigFile">插件配置文件。</param>
         public void Install(String addinConfigFile)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             if (String.IsNullOrWhiteSpace(addinConfigFile))
             {
                 throw new ArgumentNullException("addinConfigFile");
@@ -177,7 +177,7 @@ namespace Tumbler.Addin.Core
         /// <param name="addinNode">插件树节点。</param>
         public void Uninstall(AddinNode addinNode)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             String addinConfigFile = addinNode.AddinConfigFile;
             UninstalImpl(addinConfigFile);
         }
@@ -188,7 +188,7 @@ namespace Tumbler.Addin.Core
         /// <param name="info">插件基本信息。</param>
         public void Uninstall(AddinBaseInfo info)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             String addinConfigFile = info.AddinConfigFile;
             if (String.IsNullOrWhiteSpace(addinConfigFile)) return;
             UninstalImpl(addinConfigFile);
@@ -201,7 +201,7 @@ namespace Tumbler.Addin.Core
         /// <returns>插件树节点。</returns>
         public IEnumerable<AddinTreeNode> GetNode(String fullPath)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             if (String.IsNullOrWhiteSpace(fullPath)) return null;
             if (fullPath == AllTargets)
             {
@@ -280,7 +280,7 @@ namespace Tumbler.Addin.Core
         /// <returns>下一级插件列表。</returns>
         internal IAddin[] BuildChildAddins(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             IList<IAddin> addins = new List<IAddin>();
@@ -295,7 +295,7 @@ namespace Tumbler.Addin.Core
         /// <returns>子插件列表。</returns>
         internal IAddin[] GetChildAddins(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             String[] exposes = descriptor.Owner.Exposes;
@@ -318,7 +318,7 @@ namespace Tumbler.Addin.Core
         /// <param name="addin">插件。</param>
         internal void Destroy(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) throw new InvalidOperationException("This addin is out of control");
             descriptor.Destroy();
@@ -331,7 +331,7 @@ namespace Tumbler.Addin.Core
         /// <returns>挂载的完整路径。</returns>
         internal String GetFullPath(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return null;
             return descriptor.Owner.FullPath;
@@ -357,7 +357,7 @@ namespace Tumbler.Addin.Core
         /// <returns>挂载路径。</returns>
         internal String GetMountTo(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return null;
             return descriptor.Owner.MountTo;
@@ -370,7 +370,7 @@ namespace Tumbler.Addin.Core
         /// <returns>挂载点。</returns>
         internal String GetMountExpose(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return null;
             return descriptor.Owner.MountExpose;
@@ -383,7 +383,7 @@ namespace Tumbler.Addin.Core
         /// <returns>插件的暴露点。</returns>
         internal String[] GetExposes(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return null;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             if (descriptor == null) return null;
             return descriptor.Owner.Exposes;
@@ -395,7 +395,7 @@ namespace Tumbler.Addin.Core
         /// <param name="addin">状态改变的插件。</param>
         internal void NotifyStateChanged(IAddin addin)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             String fullPath = descriptor.Owner.FullPath;
             Collection<AddinDescriptor> descriptors = AddinDescriptor.GetDependencies(fullPath);
@@ -418,7 +418,7 @@ namespace Tumbler.Addin.Core
         /// <param name="oldData">旧数据。</param>
         internal void NotifyDataChanged(IAddin addin, String name, Object newData, Object oldData)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(addin);
             String fullPath = descriptor.Owner.FullPath;
             Collection<AddinDescriptor> descriptors = AddinDescriptor.GetDependencies(fullPath);
@@ -438,7 +438,7 @@ namespace Tumbler.Addin.Core
         /// <param name="service">主服务。</param>
         internal void StopDependencies(IService service)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             AddinDescriptor descriptor = AddinDescriptor.FindAddinDescriptor(service);
             if (descriptor == null) throw new InvalidOperationException("This service is out of control");
             Collection<AddinDescriptor> children = AddinDescriptor.GetDependencies(descriptor.Owner.FullPath);
@@ -470,14 +470,14 @@ namespace Tumbler.Addin.Core
         /// <param name="message">消息。</param>
         private void SendMessageImpl<TContent>(MessageArgs<TContent> message)
         {
-            if (!_isInit) throw new InvalidOperationException("Need initialize");
+            if (!_isInit) return;
             if (message.Sender != _host && message.Destination == HostTarget)
             {
                 _host.OnReceive(message);
             }
             else
             {
-                IEnumerable<AddinNode> nodes = GetNode(message.Destination).OfType<AddinNode>();
+                IEnumerable<AddinNode> nodes = GetNode(message.Destination)?.OfType<AddinNode>();
                 if (nodes == null) return;
                 foreach (AddinNode node in nodes)
                 {
@@ -546,7 +546,8 @@ namespace Tumbler.Addin.Core
             foreach (XElement element in loadList)
             {
                 node = GetAddinTreeNode(element);
-                if (!node.IsVirtual && !filter((AddinNode)node)) continue;
+                if (node == null|| node.IsVirtual) continue;
+                if (!filter((AddinNode)node)) continue;
                 if (node != null && !_nodes.ContainsKey(node.FullPath))
                 {
                     _nodes.Add(node.FullPath, node);
